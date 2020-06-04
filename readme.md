@@ -1,9 +1,10 @@
 <img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260" >
 <br>
 <br>
-[![NPM version][npm-image]][npm-url]
-<!-- [![build status][travis-image]][travis-url] -->
+[![npm][npm-image]][npm-url]
 
+[npm-image]: https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/react-native-merlin
 ---
 
 Simple web like forms in react native. Controlled components with a little bit of magic.
@@ -193,8 +194,3 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus fermentum
 // initialValues
 // initialProps
 -->
-
-[npm-image]: https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/react-native-merlin
-[travis-image]: https://img.shields.io/travis/yoshuawuyts/vmd/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/yoshuawuyts/vmd
