@@ -2,10 +2,36 @@
   "name": "react-native-merlin",
   "version": "0.0.1",
   "description": "Web like forms in React Native",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "bob build"
   },
+  "@react-native-community/bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "commonjs",
+        {
+          "copyFlow": true
+        }
+      ],
+      "module"
+    ]
+  },
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "react-native": "src/index.js",
+  "files": [
+    "lib/",
+    "src/"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@react-native-community/bob": "^0.14.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-native": "^0.62.2"
+  }
 }

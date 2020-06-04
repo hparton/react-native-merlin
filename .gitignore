@@ -1,0 +1,4 @@
+node_modules/
+npm-debug.*
+lib
+.DS_Store
