@@ -1,10 +1,12 @@
 <img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260" >
 <br>
 <br>
+
 [![npm][npm-image]][npm-url]
 
 [npm-image]: https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/react-native-merlin
+
 ---
 
 Simple web like forms in react native. Controlled components with a little bit of magic.
