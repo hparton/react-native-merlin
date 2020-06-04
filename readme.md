@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260" >
+![](https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png&s=200)
+
 <br>
 <br>
 
