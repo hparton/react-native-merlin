@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png?token=ABIJQ2TNKGYRMLNA3BZV3TS63ENGM" width="260" >
+<img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260" >
 <br>
 <br>
 [![NPM version][npm-image]][npm-url]
