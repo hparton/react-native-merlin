@@ -14,6 +14,7 @@ Simple web like forms in react native. Controlled components with a little bit o
 
 [Features](#features) | [Installation](#installation) | [Usage](#usage) | [Examples](#examples) | [Command-line options](#options) | [Configuration](#configuration)
 
+<!--
 ## Features
 
 - **GitHub style:** The markdown content is rendered as close to the way it's
@@ -55,6 +56,7 @@ Simple web like forms in react native. Controlled components with a little bit o
 - **Front Matter**: Renders [Front Matter][frontmatter] in YAML and, if
   enabled, in TOML and JSON so you can preview your Jekyll and Hugo content in
   vmd. See some [examples][hugo-frontmatter].
+-->
 
 ## Installation
 
@@ -85,6 +87,8 @@ const ExampleScreen = () => {
     )
 }
 ```
+
+<!--
 
 If no FILE is provided it will try to read from standard input, or
 automatically look for "README.md" if in a TTY.
@@ -184,6 +188,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 ## Validation
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus fermentum risus, sit amet maximus enim laoreet non. Duis at neque non risus accumsan dignissim quis id erat. Donec erat elit, lobortis sit amet laoreet sed, congue at risus. Vivamus congue vitae nunc ut porttitor. Donec egestas aliquam purus, ut suscipit libero pulvinar viverra.
+-->
 
 <!--
 // form usage

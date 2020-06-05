@@ -1,11 +1,13 @@
 import React, {
   useEffect,
   useState,
-  createElement,
+  cloneElement,
   useRef,
   forwardRef,
 } from 'react'
+
 import { View } from 'react-native'
+
 import {
   parseFieldErrors,
   parseFieldValues,
@@ -28,6 +30,7 @@ export default forwardRef(
     },
     ref
   ) => {
+    let tmp = 0
     const [values, setValues] = useState({})
     const [errors, setErrors] = useState({})
     const Inputs = useRef([])
@@ -103,55 +106,56 @@ export default forwardRef(
     }
 
     const parseJSX = (childNodes) => {
+      // https://reactjs.org/docs/react-api.html#reactchildrentoarray
       return (
         <>
           {forceArray(childNodes).map((child, i) => {
             if (child.props && child.props.name) {
-              let el = createElement(child.type, {
-                ...{
-                  ...child.props,
-                  ref: (e) => {
-                    Inputs.current[i] = e
-                  },
-                  value: values[child.props.name],
-                  [child.props.onChangeKey || 'onChangeText']: (v) => {
-                    let value = child.props.handleValue
-                      ? child.props.handleValue(v)
-                      : v
-
-                    if (revalidateOnInput) {
-                      if (errors[child.props.name]) {
-                        clearError(child.props.name)
-                        validate(child.props, value, values)
-                      } else {
-                        clearError(child.props.name)
-                      }
-                    }
-
-                    setValue(child.props.name, value)
-                  },
-                  onSubmitEditing: () => {
-                    if (child.props.multiline && child.props.multiline) {
-                      return
-                    }
-
-                    if (Inputs.current[i + 1]) {
-                      Inputs.current[i + 1].focus()
-                    } else {
-                      Inputs.current[i].blur()
-                      submitOnLastField && attemptSubmission()
-                    }
-                  },
-                  onEndEditing: () =>
-                    validateOnBlur &&
-                    validate(child.props, values[child.props.name], values),
-                  returnKeyType: Inputs.current[i + 1] ? 'next' : 'done',
-                  blurOnSubmit: false,
-                  key: child.props.name,
-                  error: errors[child.props.name],
+              return cloneElement(child, {
+                ref: (e) => {
+                  Inputs.current[i] = e
                 },
+                value: values[child.props.name],
+                [child.props.onChangeKey || 'onChangeText']: (v) => {
+                  let value = child.props.handleValue
+                    ? child.props.handleValue(v)
+                    : v
+
+                  if (revalidateOnInput) {
+                    if (errors[child.props.name]) {
+                      clearError(child.props.name)
+                      validate(child.props, value, values)
+                    } else {
+                      clearError(child.props.name)
+                    }
+                  }
+
+                  setValue(child.props.name, value)
+                },
+                onSubmitEditing: (nativeEvent) => {
+                  if (child.props.multiline && child.props.multiline) {
+                    return
+                  }
+
+                  if (Inputs.current[i + 1]) {
+                    Inputs.current[i + 1].focus()
+                  } else {
+                    Inputs.current[i].blur()
+                    submitOnLastField && attemptSubmission()
+                  }
+                },
+                onEndEditing: () =>
+                  validateOnBlur &&
+                  validate(child.props, values[child.props.name], values),
+                returnKeyType: child.props.multiline
+                  ? 'return'
+                  : Inputs.current[i + 1]
+                  ? 'next'
+                  : 'done',
+                blurOnSubmit: false,
+                key: child.props.name,
+                error: errors[child.props.name],
               })
-              return el
             }
 
             if (
@@ -159,26 +163,23 @@ export default forwardRef(
               child.props.type &&
               child.props.type === 'submit'
             ) {
-              return createElement(child.type, {
-                ...{
-                  key: `${child.props.type}-${i}`,
-                  ...child.props,
-                  onPress: () => attemptSubmission(child.key),
-                  disabled: child.props.disabled
-                    ? child.props.disabled
-                    : child.props.disable
-                    ? child.props.disable({
-                        values,
-                        errors,
-                        setErrors,
-                        runValidation,
-                        setValues,
-                        empty:
-                          !Object.values(values).filter((i) => i != false)
-                            .length > 0,
-                      })
-                    : undefined,
-                },
+              return cloneElement(child, {
+                key: `${child.props.type}-${i}`,
+                onPress: () => attemptSubmission(child.key),
+                disabled: child.props.disabled
+                  ? child.props.disabled
+                  : child.props.disable
+                  ? child.props.disable({
+                      values,
+                      errors,
+                      setErrors,
+                      runValidation,
+                      setValues,
+                      empty:
+                        !Object.values(values).filter((i) => i != false)
+                          .length > 0,
+                    })
+                  : undefined,
               })
             }
 
@@ -187,13 +188,10 @@ export default forwardRef(
               child.props.children &&
               typeof child.props.children !== 'string'
             ) {
-              return createElement(
-                child.type,
+              return cloneElement(
+                child,
                 {
-                  ...{
-                    key: i,
-                    ...child.props,
-                  },
+                  key: i,
                 },
                 parseJSX(child.props.children)
               )

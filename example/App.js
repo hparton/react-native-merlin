@@ -19,7 +19,7 @@ import {
   Alert,
 } from 'react-native';
 
-import Form, {error} from './src/index';
+import Form from './src/index';
 
 const App: () => React$Node = () => {
   return (
