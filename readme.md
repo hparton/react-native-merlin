@@ -12,51 +12,15 @@
 
 Simple web like forms in react native. Controlled components with a little bit of magic.
 
-[Features](#features) | [Installation](#installation) | [Usage](#usage) | [Examples](#examples) | [Command-line options](#options) | [Configuration](#configuration)
+[Features](#features) | [Installation](#installation) | [Usage](#usage)
 
-<!--
 ## Features
 
-- **GitHub style:** The markdown content is rendered as close to the way it's
-  rendered on GitHub as possible.
+- **Simple:** Merlin aims to mimic the functionality of web forms, just wrap your
+  inputs in a `<Form>` tag, add an onSubmit and any inputs you want to track.
 
-- **File watching:** Local files opened in vmd are watched for changes and the
-  viewer will automatically update when a file has been changed. This makes it
-  ideal for writing documents in your favorite text editor and get a live
-  preview.
-
-- **Standard input:** View any markdown text from other programs by piping
-  another program's output in to vmd. Check out the [examples](#examples) for
-  cool use cases.
-
-- **Drag & Drop:** Drag files from your file browser or desktop on to a vmd
-  window and render it. Hold the `Shift` key while dropping to open the file
-  in a new window.
-
-- **Navigation:** Navigate within linked sections in a document, open relative
-  links to other documents in the same window or in a new one (`shift-click`),
-  and always be able to go back in the history. And open links to directories
-  in your file manager and external links in your default browser.
-
-- **Clipboard:** Copy links and local file paths to the clipboard, and even
-  copy images in binary format to paste them in to your image editing
-  software.
-
-- **Emoji:** :bowtie: Displays emoji, such as `:sweat_drops:`. Take a look at the
-  [Emoji Cheat Sheet][emoji-cheat-sheet] for a list of available emoji.
-
-- **Search in page:** Search within your markdown file and scroll to the
-  results. Select "Edit -> Find" from the menu or hit `Ctrl+F` (or `Cmd+F` on
-  OS X).
-
-- **Customization:** Select different themes and provide your own styles to
-  make vmd look the way you want. Take a look at the [Options](#options) for
-  an overview of available customization options.
-
-- **Front Matter**: Renders [Front Matter][frontmatter] in YAML and, if
-  enabled, in TOML and JSON so you can preview your Jekyll and Hugo content in
-  vmd. See some [examples][hugo-frontmatter].
--->
+- **Built in Validation:** Built in support for basic validation with the option
+  to extend it with your own and overwrite any error messages.
 
 ## Installation
 
