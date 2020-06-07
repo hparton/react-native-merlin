@@ -1,8 +1,4 @@
-![](https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png&s=200)
-
-<br>
-<br>
-
+<img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="400">
 [![npm][npm-image]][npm-url]
 
 [npm-image]: https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square
