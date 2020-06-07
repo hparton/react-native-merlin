@@ -7,7 +7,7 @@
 
 ---
 
-Simple web like forms in react native. Controlled components with a little bit of magic.
+Simple web like forms in react native.
 
 [Features](#features) | [Installation](#installation) | [Usage](#usage)
 
