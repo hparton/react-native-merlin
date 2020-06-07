@@ -88,7 +88,7 @@ export const validate = (
     }
   }
 
-  if (validate && validator && validator(value, { error, values })) {
+  if (validator && validator(value, { error, values })) {
     let validationError = validator(value, { error, values })
 
     validationError.message = errorMessage(

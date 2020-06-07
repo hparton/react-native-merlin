@@ -49,9 +49,12 @@ const App: () => React$Node = () => {
             <View>
               <TextInput
                 name="email"
-                validator={(v, {error}) =>
+                validator={(v, {error, values}) =>
                   v !== 'jam@isgreat.fact' &&
-                  error('jamError', 'Jam is great and you know it.')
+                  error(
+                    'jamError',
+                    `Jam is great and you know it ${values.name}`,
+                  )
                 }
                 style={{backgroundColor: 'pink'}}
               />

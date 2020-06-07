@@ -1,4 +1,5 @@
 import { forceArray } from '../utils/helpers'
+import { validate } from '../utils/validation'
 
 export const parseFieldValues = (childNodes, values, initialValues) => {
   return forceArray(childNodes).reduce((parsedFields, child, i) => {
@@ -58,12 +59,12 @@ export const parseFieldErrors = (childNodes, initialErrors) => {
   }, {})
 }
 
-export const parseFieldValidation = (childNodes, values, validate) => {
+export const parseFieldValidation = (childNodes, values) => {
   return forceArray(childNodes).reduce((arr, child, i) => {
     if (child.props && child.props.name) {
-      let validated = validate(child.props, values[child.props.name])
+      let validated = validate(child.props, values[child.props.name], values)
       return validated !== true
-        ? [...arr, validate(child.props, values[child.props.name])]
+        ? [...arr, validate(child.props, values[child.props.name], values)]
         : arr
     }
 

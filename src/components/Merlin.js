@@ -219,7 +219,7 @@ export default forwardRef(
     }
 
     const runValidation = () => {
-      let validationErrors = parseFieldValidation(children, values, validate)
+      let validationErrors = parseFieldValidation(children, values)
 
       let errorsMappedToFields = validationErrors.reduce((errors, item) => {
         errors[item.name] = item.error
