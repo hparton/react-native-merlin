@@ -19,7 +19,7 @@ import {
   Alert,
 } from 'react-native';
 
-import Form from './src/index';
+import Form from 'react-native-merlin';
 
 const App: () => React$Node = () => {
   return (
@@ -36,21 +36,29 @@ const App: () => React$Node = () => {
               }
             }}>
             <TextInput name="name" required style={{backgroundColor: 'pink'}} />
-            <TextInput
-              name="password"
-              required
-              secureTextEntry={true}
-              style={{backgroundColor: 'pink'}}
-            />
-            <TextInput
-              name="email"
-              validator={(v, {error}) =>
-                v !== 'jam@isgreat.fact' &&
-                error('jamError', 'Jam is great and you know it.')
-              }
-              style={{backgroundColor: 'pink'}}
-            />
-            <Button title="Submit" type="submit" />
+            <View>
+              <View>
+                <TextInput
+                  name="password"
+                  required
+                  secureTextEntry={true}
+                  style={{backgroundColor: 'pink'}}
+                />
+              </View>
+            </View>
+            <View>
+              <TextInput
+                name="email"
+                validator={(v, {error}) =>
+                  v !== 'jam@isgreat.fact' &&
+                  error('jamError', 'Jam is great and you know it.')
+                }
+                style={{backgroundColor: 'pink'}}
+              />
+            </View>
+            <View>
+              <Button title="Submit" type="submit" />
+            </View>
           </Form>
         </ScrollView>
       </SafeAreaView>
