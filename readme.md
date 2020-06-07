@@ -1,7 +1,4 @@
-![](https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png&s=200)
-
-<br>
-<br>
+<img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260">
 
 [![npm][npm-image]][npm-url]
 
@@ -10,7 +7,7 @@
 
 ---
 
-Simple web like forms in react native. Controlled components with a little bit of magic.
+Simple web like forms in react native.
 
 [Features](#features) | [Installation](#installation) | [Usage](#usage)
 
