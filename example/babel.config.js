@@ -5,7 +5,7 @@ module.exports = {
       'module-resolver',
       {
         alias: {
-          'react-native-safe-area-view': '../src/index',
+          'react-native-merlin': '../src/index',
         },
       },
     ],
