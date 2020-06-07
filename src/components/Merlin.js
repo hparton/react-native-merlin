@@ -1,6 +1,7 @@
 import React, {
   useEffect,
   useState,
+  createRef,
   cloneElement,
   useRef,
   forwardRef,
@@ -13,6 +14,9 @@ import {
   parseFieldValues,
   parseFieldValidation,
 } from '../lib/parse'
+
+import { parseInputs, getInputPosition, getReturnKeyType } from '../lib/inputs'
+
 import { filterRelevant, forceArray } from '../utils/helpers'
 import { error, errorMessage, validate } from '../utils/validation'
 
@@ -24,16 +28,16 @@ export default forwardRef(
       initialValues = {},
       initialErrors = {},
       validateOnBlur = false,
-      submitOnLastField = true,
+      submitAfterLastInput = true,
       revalidateOnInput = true,
       onSubmit,
     },
     ref
   ) => {
-    let tmp = 0
     const [values, setValues] = useState({})
     const [errors, setErrors] = useState({})
-    const Inputs = useRef([])
+    const inputs = parseInputs(children || [])
+    const inputRefs = {}
 
     const setValue = (name, value) =>
       setValues((state) => ({
@@ -106,16 +110,16 @@ export default forwardRef(
     }
 
     const parseJSX = (childNodes) => {
+      // console.log(depth)
       // https://reactjs.org/docs/react-api.html#reactchildrentoarray
       return (
         <>
           {forceArray(childNodes).map((child, i) => {
             if (child.props && child.props.name) {
-              return cloneElement(child, {
-                ref: (e) => {
-                  Inputs.current[i] = e
-                },
+              let ref = createRef()
+              let element = cloneElement(child, {
                 value: values[child.props.name],
+                ref: child.ref ? child.ref : ref,
                 [child.props.onChangeKey || 'onChangeText']: (v) => {
                   let value = child.props.handleValue
                     ? child.props.handleValue(v)
@@ -137,25 +141,36 @@ export default forwardRef(
                     return
                   }
 
-                  if (Inputs.current[i + 1]) {
-                    Inputs.current[i + 1].focus()
+                  const inputPosition = getInputPosition(
+                    inputs,
+                    child.props.name
+                  )
+                  const nextInputs = inputs.slice(inputPosition + 1)
+
+                  const nextFocusableInput = nextInputs.find(
+                    (element) =>
+                      inputRefs[element.props.name] &&
+                      inputRefs[element.props.name].current.focus
+                  )
+
+                  if (nextFocusableInput) {
+                    inputRefs[nextFocusableInput.props.name].current.focus()
                   } else {
-                    Inputs.current[i].blur()
-                    submitOnLastField && attemptSubmission()
+                    inputRefs[child.props.name].current.blur()
+                    submitAfterLastInput && attemptSubmission()
                   }
                 },
                 onEndEditing: () =>
                   validateOnBlur &&
                   validate(child.props, values[child.props.name], values),
-                returnKeyType: child.props.multiline
-                  ? 'return'
-                  : Inputs.current[i + 1]
-                  ? 'next'
-                  : 'done',
+                returnKeyType: getReturnKeyType(inputs, child.props.name),
                 blurOnSubmit: false,
                 key: child.props.name,
                 error: errors[child.props.name],
               })
+
+              inputRefs[child.props.name] = ref
+              return element
             }
 
             if (
