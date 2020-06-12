@@ -1,6 +1,7 @@
 <img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260">
 
 [![npm][npm-image]][npm-url]
+![Travis (.com) branch](https://img.shields.io/travis/com/hparton/react-native-merlin/master?style=flat-square)
 
 [npm-image]: https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/react-native-merlin
