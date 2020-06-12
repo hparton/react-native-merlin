@@ -8,6 +8,8 @@ export const parseFieldValues = (childNodes, values, initialValues) => {
         ? values[child.props.name]
         : initialValues[child.props.name]
         ? initialValues[child.props.name]
+        : child.props.initialValue
+        ? child.props.initialValue
         : ''
 
       return parsedFields

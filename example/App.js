@@ -50,6 +50,7 @@ const App: () => React$Node = () => {
                 <TextInput
                   name="name"
                   testID="input"
+                  initialValue="example"
                   required
                   style={styles.input}
                 />
