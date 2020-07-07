@@ -67,16 +67,6 @@ export default forwardRef(
       return true
     }
 
-    if (ref) {
-      ref.current = {
-        values,
-        errors,
-        setValue,
-        setError,
-        clearErrors,
-      }
-    }
-
     useEffect(() => {
       let fieldValues = parseFieldValues(children, values, initialValues)
       let fieldErrors = parseFieldErrors(children, initialErrors)
@@ -229,6 +219,17 @@ export default forwardRef(
       setErrors(errorsMappedToFields)
 
       return { errors: errorsMappedToFields, isValid: !validationErrors.length }
+    }
+
+    if (ref) {
+      ref.current = {
+        values,
+        errors,
+        setValue,
+        setError,
+        clearErrors,
+        submit: attemptSubmission,
+      }
     }
 
     return <View style={style}>{parseJSX(children)}</View>
