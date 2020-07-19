@@ -13,8 +13,11 @@ export const parseInputs = (children) =>
 export const getInputPosition = (inputs, name) =>
   inputs.findIndex((input) => input.props.name === name)
 
-export const getReturnKeyType = (inputs, name) => {
+export const getReturnKeyType = (inputs, name, multiline) => {
   const inputPosition = getInputPosition(inputs, name)
+  if (multiline) {
+    return 'default';
+  }
   const isLastInput = inputPosition === inputs.length - 1
   return isLastInput ? 'done' : 'next'
 }

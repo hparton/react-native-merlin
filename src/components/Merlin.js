@@ -153,7 +153,7 @@ export default forwardRef(
                 onEndEditing: () =>
                   validateOnBlur &&
                   validate(child.props, values[child.props.name], values),
-                returnKeyType: getReturnKeyType(inputs, child.props.name),
+                returnKeyType: getReturnKeyType(inputs, child.props.name, child.props.multiline),
                 blurOnSubmit: false,
                 key: child.props.name,
                 error: errors[child.props.name],
