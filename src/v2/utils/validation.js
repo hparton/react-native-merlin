@@ -1,34 +1,3 @@
-export const phone = (string) => {
-  let tester = /^(((\+44\s?\d{4}|\(?0\d{4}\)?)\s?\d{3}\s?\d{3})|((\+44\s?\d{3}|\(?0\d{3}\)?)\s?\d{3}\s?\d{4})|((\+44\s?\d{2}|\(?0\d{2}\)?)\s?\d{4}\s?\d{4}))(\s?\#(\d{4}|\d{3}))?$/g
-
-  return tester.test(string)
-}
-
-export const email = (string) => {
-  let tester = /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
-
-  if (!tester.test(string)) {
-    return false
-  }
-
-  // Further checking of some things regex can't handle
-  let [account, address] = string.split('@')
-  if (account.length > 64) {
-    return false
-  }
-
-  let domainParts = address.split('.')
-  if (
-    domainParts.some(function (part) {
-      return part.length > 63
-    })
-  ) {
-    return false
-  }
-
-  return true
-}
-
 export const error = (type, message) => ({
   type,
   message,
@@ -49,7 +18,7 @@ export const validate = (
   value,
   values
 ) => {
-  if (required && value === '') {
+  if (required && !value) {
     return {
       name,
       error: error(
