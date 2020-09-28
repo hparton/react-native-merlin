@@ -54,6 +54,7 @@ const Form = ({
     if (valid) {
       onSubmit && onSubmit(values, { e, id })
     } else {
+      setErrors(errors)
       onError && onError(errors, { e, id })
     }
   }

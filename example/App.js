@@ -28,6 +28,17 @@ const initialValues = {
   username: 'Hary',
 };
 
+const empty = values =>
+  !values || !Object.values(values).filter(i => i != false).length > 0;
+
+const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
+  <View>
+    {label && <Text style={styles.label}>{label}</Text>}
+    <TextInput {...props} ref={ref} />
+    {error && <Text>{error.message}</Text>}
+  </View>
+));
+
 const App: () => React$Node = () => {
   return (
     <>
@@ -47,27 +58,59 @@ const App: () => React$Node = () => {
             </View>
 
             <View style={styles.sectionContainer}>
-              <Text>Username</Text>
+              <Text style={styles.label}>Username</Text>
               <Form.Input
-                as={TextInput}
+                style={styles.input}
                 name="username"
                 required
                 maxLength={20}
                 minLength={5}
+                validator={(v, {error, values}) =>
+                  v !== 'Harry' &&
+                  error('customError', `Harry is the only valid username.`)
+                }
               />
-              <Text>Password</Text>
-              <Form.Input as={TextInput} name="password" required />
-              <Text>Title</Text>
-              <Form.Input as={TextInput} name="title" required />
-              <Text>Pet Name</Text>
-              <Form.Input as={TextInput} name="pet-name" multiline required />
-              <Text>Childs Name</Text>
-              <Form.Input as={TextInput} name="child.name" required />
+              <Form.Error name="username" />
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Password"
+                name="password"
+                required
+              />
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Title"
+                name="title"
+                required
+              />
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Pet Name"
+                name="pet-name"
+                multiline
+                required
+              />
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Childs Name"
+                name="child.name"
+                required
+              />
             </View>
 
             <View style={styles.sectionContainer}>
               <View>
-                <Text>Do you agree to the terms and conditions?</Text>
+                <Text style={styles.label}>
+                  Do you agree to the terms and conditions?
+                </Text>
                 <Form.Input
                   as={Switch}
                   name="terms"
@@ -75,10 +118,17 @@ const App: () => React$Node = () => {
                   eventKey="onValueChange"
                 />
               </View>
+              <Form.Error name="terms" />
             </View>
 
             <View style={styles.sectionContainer}>
-              <Form.Submit as={Button} title="Submit" />
+              <Form.State>
+                {({values}) => {
+                  return (
+                    <Form.Submit title="Submit" disabled={empty(values)} />
+                  );
+                }}
+              </Form.State>
 
               <Form.Submit as={TouchableOpacity}>
                 <Text>Submit that form!</Text>
@@ -124,12 +174,15 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  label: {
+    marginTop: 10,
+  },
   input: {
     borderWidth: 1,
     borderColor: 'grey',
     borderRadius: 4,
     padding: 10,
-    marginTop: 10,
+    marginTop: 5,
   },
   footer: {
     color: Colors.dark,

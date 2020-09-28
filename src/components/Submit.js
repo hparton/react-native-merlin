@@ -1,8 +1,15 @@
 import React, { useCallback } from 'react'
+import { Button } from 'react-native'
 import { useForm } from './Form'
 
-const Submit = ({ as, children, eventKey = 'onPress', id, ...props }) => {
-  const { handleSubmit } = useForm('Form.Submit')
+const Submit = ({
+  as = Button,
+  children,
+  eventKey = 'onPress',
+  id,
+  ...props
+}) => {
+  const { values, handleSubmit } = useForm('Form.Submit')
   const Tag = as
 
   const submit = useCallback(

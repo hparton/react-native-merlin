@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react'
+import { TextInput } from 'react-native'
 import { getReturnKeyType, getNextFocusableInput } from '../utils/inputs'
+import { validate } from '../utils/validation'
 import { useForm } from './Form'
 
 const Input = ({
-  as,
+  as = TextInput,
   children,
   eventKey = 'onChangeText',
   handleValue,
@@ -17,12 +19,32 @@ const Input = ({
   ...passThrough
 }) => {
   const ref = useRef(null)
-  const { values, setValues, errors, inputs, setInputs } = useForm('Form.Input')
+  const { values, setValues, setErrors, errors, inputs, setInputs } = useForm(
+    'Form.Input'
+  )
   const Tag = as
 
   const onEvent = v => {
     let value = handleValue ? handleValue(v) : v
     setValues(current => ({ ...current, [name]: v }))
+
+    const validated = validate(
+      { name, ref, required, minLength, maxLength, validator },
+      v,
+      values
+    )
+
+    if (validated === true && errors?.[name]) {
+      setErrors(current => {
+        delete current[name]
+        return current
+      })
+    } else {
+      setErrors(current => ({
+        ...current,
+        [validated.name]: validated.error,
+      }))
+    }
   }
 
   useEffect(() => {
