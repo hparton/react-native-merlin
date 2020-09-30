@@ -6,12 +6,12 @@
   Simple web like forms in react native.
 </p>
 
-<p align="center">
-  <a href="https://npmjs.org/package/react-native-merlin"><img src="https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square"></a>
-</p>
-
 <p align="center"> 
   <a href="#installation">Installation</a> | <a href="#components">Components</a> | <a href="#usage">Usage</a>
+</p>
+
+<p align="center">
+  <a href="https://npmjs.org/package/react-native-merlin"><img src="https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square"></a>
 </p>
 
 ## About
