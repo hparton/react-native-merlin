@@ -49,10 +49,11 @@ const App: () => React$Node = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        style={styles.scrollView}>
+        <SafeAreaView>
           <Form
             values={initialValues}
             onSubmit={(values, {event, id}) => {
@@ -155,8 +156,8 @@ const App: () => React$Node = () => {
               </Form.Submit>
             </View>
           </Form>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </>
   );
 };
@@ -164,6 +165,7 @@ const App: () => React$Node = () => {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
+    height: '100%',
   },
   engine: {
     position: 'absolute',

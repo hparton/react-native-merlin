@@ -25,3 +25,12 @@ export const getNextFocusableInput = (inputs, name) => {
 
   return false
 }
+
+export const filterRelevant = (state, inputs) => {
+  return Object.keys(state)
+    .filter(key => inputs.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = state[key]
+      return obj
+    }, {})
+}

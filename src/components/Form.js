@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import useInputRefs from '../hooks/useInputRefs'
 import { validate } from '../utils/validation'
+import { filterRelevant } from '../utils/inputs'
 
 const FormContext = React.createContext()
 
@@ -40,8 +41,6 @@ const Form = ({
   }, [_errors])
 
   const validateAllFields = values => {
-    console.log(inputs)
-
     const errors = inputs
       .map(input => validate(input, values[input.name], values))
       .filter(v => v !== true)
@@ -56,9 +55,11 @@ const Form = ({
 
   const handleSubmit = (event, id) => {
     const { valid, errors } = validateAllFields(values)
+    const inputNames = inputs.map(input => input.name)
+    const relevantValues = filterRelevant(values, inputNames)
 
     if (valid) {
-      onSubmit && onSubmit(values, { event, id })
+      onSubmit && onSubmit(relevantValues, { event, id })
     } else {
       setErrors(errors)
       onError && onError(errors, { event, id })
