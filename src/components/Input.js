@@ -8,7 +8,7 @@ const Input = ({
   as = TextInput,
   children,
   eventKey = 'onChangeText',
-  handleValue,
+  parseValue,
   multiline,
   required,
   minLength,
@@ -19,14 +19,21 @@ const Input = ({
   ...passThrough
 }) => {
   const ref = useRef(null)
-  const { values, setValues, setErrors, errors, inputs, setInputs } = useForm(
-    'Form.Input'
-  )
+  const {
+    values,
+    setValues,
+    setErrors,
+    errors,
+    inputs,
+    shouldRecalculate,
+    addInput,
+    registerInput,
+  } = useForm('Form.Input')
   const Tag = as
 
   const onEvent = v => {
-    let value = handleValue ? handleValue(v) : v
-    setValues(current => ({ ...current, [name]: v }))
+    let value = parseValue ? parseValue(v) : v
+    setValues(current => ({ ...current, [name]: value }))
 
     const validated = validate(
       { name, ref, required, minLength, maxLength, validator },
@@ -48,17 +55,12 @@ const Input = ({
   }
 
   useEffect(() => {
-    console.log(`${name} field added`)
-    setInputs(current => [
-      ...current,
-      { name, ref, required, minLength, maxLength, validator },
-    ])
-
-    return () => {
-      console.log(`${name} field removed`)
-      setInputs(current => current.filter(input => input.name !== name))
+    if (shouldRecalculate) {
+      registerInput({ name, ref, required, minLength, maxLength, validator })
     }
-  }, [])
+  }, [shouldRecalculate])
+
+  useEffect(addInput, [])
 
   const returnKeyType = useMemo(() => {
     return getReturnKeyType(inputs, name, multiline)
@@ -89,6 +91,7 @@ const Input = ({
 
   return (
     <Tag
+      key={name}
       {...{
         ...passThrough,
         ...merlinProps,

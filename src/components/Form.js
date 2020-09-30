@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import useInputRefs from '../hooks/useInputRefs'
 import { validate } from '../utils/validation'
 
 const FormContext = React.createContext()
@@ -18,24 +19,29 @@ const Form = ({
   onError,
   values: _values,
   errors: _errors,
-  revalidateOnInput = true,
+  watch = false,
+  watchValues = false,
+  watchErrors = false,
 }) => {
   const [values, setValues] = useState(_values)
   const [errors, setErrors] = useState(_errors)
-  const [inputs, setInputs] = useState([])
+  const { registerInput, addInput, inputs, shouldRecalculate } = useInputRefs()
 
   useEffect(() => {
-    // if (revalidateOnInput) {
-    //   validateAllFields(values)
-    // }
-    console.log('values: ', values)
-  }, [values])
+    if (watch || watchValues) {
+      setValues(_values)
+    }
+  }, [_values])
 
   useEffect(() => {
-    console.log('inputs: ', inputs)
-  }, [inputs])
+    if (watch || watchErrors) {
+      setErrors(_errors)
+    }
+  }, [_errors])
 
   const validateAllFields = values => {
+    console.log(inputs)
+
     const errors = inputs
       .map(input => validate(input, values[input.name], values))
       .filter(v => v !== true)
@@ -48,14 +54,14 @@ const Form = ({
     return { valid: !errors.length, errors: errorsMappedToNames }
   }
 
-  const handleSubmit = (e, id) => {
+  const handleSubmit = (event, id) => {
     const { valid, errors } = validateAllFields(values)
 
     if (valid) {
-      onSubmit && onSubmit(values, { e, id })
+      onSubmit && onSubmit(values, { event, id })
     } else {
       setErrors(errors)
-      onError && onError(errors, { e, id })
+      onError && onError(errors, { event, id })
     }
   }
 
@@ -67,7 +73,9 @@ const Form = ({
         errors,
         setErrors,
         inputs,
-        setInputs,
+        registerInput,
+        addInput,
+        shouldRecalculate,
         handleSubmit,
       }}
     >

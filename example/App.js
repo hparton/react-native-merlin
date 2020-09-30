@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,7 +15,6 @@ import {
   Text,
   StatusBar,
   TextInput,
-  Button,
   Switch,
   TouchableOpacity,
 } from 'react-native';
@@ -31,6 +30,11 @@ const initialValues = {
 const empty = values =>
   !values || !Object.values(values).filter(i => i != false).length > 0;
 
+const reverseString = value => {
+  const arr = value.split('');
+  return [arr[arr.length - 1], ...arr.slice(0, -1)].join('');
+};
+
 const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
   <View>
     {label && <Text style={styles.label}>{label}</Text>}
@@ -40,6 +44,8 @@ const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
 ));
 
 const App: () => React$Node = () => {
+  const [showExtraFields, setShowExtraFields] = useState(true);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -49,12 +55,16 @@ const App: () => React$Node = () => {
           style={styles.scrollView}>
           <Form
             values={initialValues}
-            onSubmit={(values, {e, id}) =>
-              console.log('Submitted! ', values, id)
-            }
+            onSubmit={(values, {event, id}) => {
+              console.log('Submitted! ', values, id);
+            }}
             onError={errors => console.log('Submission Failed! ', errors)}>
             <View style={styles.sectionContainer}>
               <Text>Content that isn't related to the form.</Text>
+              <Switch
+                value={showExtraFields}
+                onValueChange={() => setShowExtraFields(current => !current)}
+              />
             </View>
 
             <View style={styles.sectionContainer}>
@@ -72,11 +82,23 @@ const App: () => React$Node = () => {
               />
               <Form.Error name="username" />
 
+              {showExtraFields && (
+                <Form.Input
+                  as={StyledTextInput}
+                  parseValue={reverseString}
+                  required
+                  name="pet-name"
+                  label="Pet Name"
+                  style={styles.input}
+                />
+              )}
+
               <Form.Input
                 style={styles.input}
                 as={StyledTextInput}
                 label="Password"
                 name="password"
+                secureTextEntry={true}
                 required
               />
 
@@ -88,22 +110,16 @@ const App: () => React$Node = () => {
                 required
               />
 
-              <Form.Input
-                style={styles.input}
-                as={StyledTextInput}
-                label="Pet Name"
-                name="pet-name"
-                multiline
-                required
-              />
-
-              <Form.Input
-                style={styles.input}
-                as={StyledTextInput}
-                label="Childs Name"
-                name="child.name"
-                required
-              />
+              {showExtraFields && (
+                <Form.Input
+                  style={styles.input}
+                  as={StyledTextInput}
+                  label="Childs Name"
+                  multiline
+                  name="child.name"
+                  required
+                />
+              )}
             </View>
 
             <View style={styles.sectionContainer}>
