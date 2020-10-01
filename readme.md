@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Simple web like forms in react native.
+  Simple web-like forms in react native.
 </p>
 
 <p align="center"> 
