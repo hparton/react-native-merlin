@@ -4,11 +4,11 @@ import _Error from './components/Error'
 import _State from './components/State'
 import _Submit from './components/Submit'
 
-const Menu = _Form
+const Form = _Form
 
-Menu.Input = _Input
-Menu.Error = _Error
-Menu.State = _State
-Menu.Submit = _Submit
+Form.Input = _Input
+Form.Error = _Error
+Form.State = _State
+Form.Submit = _Submit
 
-export default Menu
+export default Form
