@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 const useInputRefs = () => {
   const inputs = useRef([])
   const [inputCount, setInputCount] = useState(0)
-  const [shouldRecalculate, setShouldRecalculate] = useState(false)
+  const [shouldRecalculate, setShouldRecalculate] = useState(true)
 
   const registerInput = props => {
     if (!props.ref) {
@@ -25,10 +25,7 @@ const useInputRefs = () => {
 
   useEffect(() => {
     inputs.current = []
-
-    if (inputCount) {
-      setShouldRecalculate(true)
-    }
+    setShouldRecalculate(true)
   }, [inputCount])
 
   useEffect(() => {
