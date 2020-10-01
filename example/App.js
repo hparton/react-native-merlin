@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,95 +15,158 @@ import {
   Text,
   StatusBar,
   TextInput,
-  Button,
+  Switch,
+  TouchableOpacity,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import Form from 'react-native-merlin';
 
+const initialValues = {
+  username: 'Hary',
+};
+
+const empty = values =>
+  !values || !Object.values(values).filter(i => i != false).length > 0;
+
+const reverseString = value => {
+  const arr = value.split('');
+  return [arr[arr.length - 1], ...arr.slice(0, -1)].join('');
+};
+
+const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
+  <View>
+    {label && <Text style={styles.label}>{label}</Text>}
+    <TextInput {...props} ref={ref} />
+    {error && <Text>{error.message}</Text>}
+  </View>
+));
+
+const CustomError = ({error}) => {
+  return <Text style={{color: 'red'}}>{error.message}</Text>;
+};
+
 const App: () => React$Node = () => {
+  const [showExtraFields, setShowExtraFields] = useState(true);
+  const testRef = useRef();
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <View style={styles.body}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        style={styles.scrollView}>
+        <SafeAreaView>
+          <Form
+            ref={testRef}
+            values={initialValues}
+            onSubmit={(values, {event, id}) => {
+              console.log('Submitted! ', values, id);
+            }}
+            onError={errors => console.log('Submission Failed! ', errors)}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Basic Form</Text>
-              <Form
-                onSubmit={({values, errors, isValid}) => {
-                  if (isValid) {
-                    Alert.alert(JSON.stringify(values));
-                  } else {
-                    console.log(errors);
-                  }
-                }}>
-                <TextInput
-                  name="name"
-                  testID="input"
-                  initialValue="example"
+              <Text>Content that isn't related to the form.</Text>
+              <Switch
+                value={showExtraFields}
+                onValueChange={() => setShowExtraFields(current => !current)}
+              />
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Text style={styles.label}>Username</Text>
+              <Form.Input
+                style={styles.input}
+                name="username"
+                required
+                maxLength={20}
+                minLength={5}
+                validator={(v, {error, values}) =>
+                  v !== 'Harry' &&
+                  error('customError', `Harry is the only valid username.`)
+                }
+              />
+
+              <Form.Error name="username" />
+
+              <Form.Error name="username" as={CustomError} />
+
+              {showExtraFields && (
+                <Form.Input
+                  as={StyledTextInput}
+                  parseValue={reverseString}
                   required
+                  name="pet-name"
+                  label="Pet Name"
                   style={styles.input}
                 />
-                <View>
-                  <View>
-                    <TextInput
-                      name="password"
-                      required
-                      secureTextEntry={true}
-                      style={styles.input}
-                    />
-                  </View>
-                </View>
-                <View>
-                  <TextInput
-                    name="email"
-                    validator={(v, {error, values}) =>
-                      v !== 'jam@isgreat.fact' &&
-                      error(
-                        'jamError',
-                        `Jam is great and you know it ${values.name}`,
-                      )
-                    }
-                    style={styles.input}
-                  />
-                </View>
-                <View>
-                  <Button title="Submit" type="submit" />
-                </View>
-              </Form>
+              )}
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Password"
+                name="password"
+                secureTextEntry={true}
+                required
+              />
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Title"
+                name="title"
+                required
+              />
+
+              {showExtraFields && (
+                <Form.Input
+                  style={styles.input}
+                  as={StyledTextInput}
+                  label="Childs Name"
+                  multiline
+                  name="child.name"
+                  required
+                />
+              )}
             </View>
+
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
+              <View>
+                <Text style={styles.label}>
+                  Do you agree to the terms and conditions?
+                </Text>
+                <Form.Input
+                  as={Switch}
+                  name="terms"
+                  required
+                  eventKey="onValueChange"
+                />
+              </View>
+              <Form.Error name="terms" />
             </View>
+
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
+              <Form.State>
+                {({values}) => {
+                  return (
+                    <Form.Submit title="Submit" disabled={empty(values)} />
+                  );
+                }}
+              </Form.State>
+
+              <Form.Submit as={TouchableOpacity}>
+                <Text>Submit that form!</Text>
+              </Form.Submit>
+
+              <Form.Submit as={TouchableOpacity} id="extra-submit">
+                <Text>Submit that form with me!</Text>
+              </Form.Submit>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          </Form>
+        </SafeAreaView>
+      </ScrollView>
     </>
   );
 };
@@ -111,6 +174,7 @@ const App: () => React$Node = () => {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
+    height: '100%',
   },
   engine: {
     position: 'absolute',
@@ -137,12 +201,15 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  label: {
+    marginTop: 10,
+  },
   input: {
     borderWidth: 1,
     borderColor: 'grey',
     borderRadius: 4,
     padding: 10,
-    marginTop: 10,
+    marginTop: 5,
   },
   footer: {
     color: Colors.dark,

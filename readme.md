@@ -1,166 +1,215 @@
-<img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260">
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hparton/react-native-merlin/master/assets/merlin.png" width="260">
+</p>
 
-[![npm][npm-image]][npm-url]
-![Travis (.com) branch](https://img.shields.io/travis/com/hparton/react-native-merlin/master?style=flat-square)
+<p align="center">
+  Simple web like forms in react native.
+</p>
 
-[npm-image]: https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/react-native-merlin
+<p align="center"> 
+  <a href="#installation">Installation</a> | <a href="#components">Components</a> | <a href="#usage">Usage</a>
+</p>
+
+<p align="center">
+  <a href="https://npmjs.org/package/react-native-merlin"><img src="https://img.shields.io/npm/v/react-native-merlin.svg?style=flat-square"></a>
+</p>
+
+## About
+
+Merlin is still in early beta, It's in a few apps currently in development and the API is mostly stable but there may be a few breaking changes between now and release. It's not recommended for use in a critical production app but feel free to tinker with it.
+
+### Features
+
+- 🔎 &nbsp;Auto focus on the next input
+- 📚 &nbsp;Built in validation with support for custom validators.
+- ❌ &nbsp;Built in error handling.
+- 💾 &nbsp;Support for external form state.
+- 📦 &nbsp;Dependency free.
+
+### Roadmap
+
+- 100% test coverage.
+- Async form validators.
+- Async submission handling.
+
+...and more in the future.
 
 ---
 
-Simple web like forms in react native.
-
-[Features](#features) | [Installation](#installation) | [Usage](#usage)
-
-## Features
-
-- **Simple:** Merlin aims to mimic the functionality of web forms, just wrap your
-  inputs in a `<Form>` tag, add an onSubmit and any inputs you want to track.
-
-- **Built in Validation:** Built in support for basic validation with the option
-  to extend it with your own and overwrite any error messages.
-
 ## Installation
 
-```bash
-$ yarn add react-native-merlin
+```sh
+# npm
+npm install react-native-merlin
+
+#yarn
+yarn add react-native-merlin
 ```
 
 ## Usage
 
 ```js
-import { Form } from 'react-native-merlin'
+import {TextInput, Button} from 'react-native'
+import Form from 'react-native-merlin'
 
 const ExampleScreen = () => {
-    return (
-        <Form
-            onSubmit={({values, errors, isValid}) => {
-                if (isValid) {
-                    console.log(values);
-                } else {
-                    console.log(errors)
-                }
-            }}
-        >
-            <TextInput name="username" />
-            <TextInput name="password" required secureTextEntry={true} />
-            <Button title="Submit" type="submit">
-        </Form>
-    )
+  return (
+    <Form
+      onSubmit={values => {
+        console.log('Form submitted! ', values);
+      }}
+      onError={errors => {
+        console.log('Form submission failed! ', errors)
+      }}
+    >
+      <Form.Input as={TextInput} name="username" />
+      <Form.Input as={TextInput} name="password" required secureTextEntry={true} />
+      <Form.Submit as={Button} title="Submit">
+    </Form>
+  )
 }
-```
-
-<!--
-
-If no FILE is provided it will try to read from standard input, or
-automatically look for "README.md" if in a TTY.
-
-### Examples
-
-Read a file from disk:
-
-```sh
-$ vmd DOCUMENT.md
-```
-
-When no path to a document is supplied, "README.md" will be opened by default:
-
-```sh
-$ vmd
-```
-
-When a path to a directory is supplied, "directory/README.md" will be opened by default:
-
-```sh
-$ vmd node_modules/electron # opens node_modules/electron/README.md
-```
-
-It reads from `stdin` so you can pipe markdown text in to it:
-
-```sh
-$ cat README.md | vmd
-```
-
-For example, you can see the readme for [browserify](https://github.com/substack/node-browserify) like so:
-
-```sh
-$ npm view browserify readme | vmd
-```
-
-Or from a GitHub project:
-
-```sh
-$ gh-rtfm substack/node-browserify | vmd
 ```
 
 ## Components
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus fermentum risus, sit amet maximus enim laoreet non. Duis at neque non risus accumsan dignissim quis id erat. Donec erat elit, lobortis sit amet laoreet sed, congue at risus. Vivamus congue vitae nunc ut porttitor. Donec egestas aliquam purus, ut suscipit libero pulvinar viverra.
+- [Form](#form)
+- [Form.Input](#forminput)
+- [Form.Submit](#formsubmit)
+- [Form.Error](#formerror)
+- [Form.State](#formstate)
 
-### Form
+#### Form
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+```jsx
+<Form
+  onSubmit={}
+  onError={}
+  values={[]}
+  errors={[]}
+  watch={false}
+  watchValues={false}
+  watchErrors={false}
+>
+  {/* Your content goes here*/}
+</Form>
+```
 
-#### Options
+##### Props
 
-- `initialValues`: Display the version number. `default: {}`
+| Prop          | Type                         | Description                                                                    |
+| ------------- | ---------------------------- | ------------------------------------------------------------------------------ |
+| `onSubmit`    | Function                     | Function to call when the form passes validation on submission.                |
+| `onError`     | Function                     | Function to call when the form fails validation on submission.                 |
+| `values`      | Object _(Default: `{}`)_     | External values to pass to the form for the inputs to use as an initial value. |
+| `errors`      | Array _(Default: `[]`)_      | External errors to pass to the form for the inputs to use as an initial error. |
+| `watch`       | Boolean _(Default: `false`)_ | Should the form update internal state if `values` or `errors` changes.         |
+| `watchValues` | Boolean _(Default: `false`)_ | Should the form update internal state if `values` changes.                     |
+| `watchErrors` | Boolean _(Default: `false`)_ | Should the form update internal state if `errors` changes.                     |
 
-- `initialErrors`: Display version numbers of different internal components such `default: {}`
+#### Form.Input
 
-- `validateOnBlur`: Display usage instructions. `default: false`
+```jsx
+<Form.Input
+  name=""
+  as={TextInput}
+  eventKey=""
+  parseValue={}
+  required
+  maxLength={}
+  minLength={}
+  validator={}
+/>
+```
 
-- `submitOnLastField`: Open with the developer tools open. `default: true`
+##### Props
 
-- `revalidateOnInput`: Set a zoom factor to make the content larger or smaller. `default: true`
+| Prop         | Type                               | Description                                                                 |
+| ------------ | ---------------------------------- | --------------------------------------------------------------------------- |
+| `name`       | String                             | Name for the input when mapped in to the form values.                       |
+| `as`         | Component _(Default: `TextInput`)_ | Component to render the input as.                                           |
+| `eventKey`   | String _(Default: `onChangeText`)_ | Event from the input to listen to for value updates.                        |
+| `parseValue` | Function                           | Function to handle input values before updating them in the form.           |
+| `required`   | Boolean _(Default: `false`)_       | Field is required to not be falsey to submit the form.                      |
+| `maxLength`  | Number                             | Field is required to be under the maxLength to submit the form.             |
+| `minLength`  | Number                             | Field is required to be over the minLength to submit the form.              |
+| `validator`  | Function                           | Custom validation function, return `true` to pass or return a custom error. |
 
-### [name="input"]
+#### Form.Submit
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+```jsx
+<Form.Submit id="" as={Button} eventKey="" />
+```
 
-#### Options
+##### Props
 
-- `name`: Display the version number. `default: {}`
+| Prop       | Type                               | Description                                                                      |
+| ---------- | ---------------------------------- | -------------------------------------------------------------------------------- |
+| `id`       | String                             | Can be consumed in the form `onSubmit` method to see where the submit came from. |
+| `as`       | Component _(Default: `Button`)_    | Component to render the input as.                                                |
+| `eventKey` | String _(Default: `onChangeText`)_ | Event from the input to listen to for value updates.                             |
 
-- `onChangeKey`: Display version numbers of different internal components such `default: {}`
+#### Form.Error
 
-- `value`: Display usage instructions. `default: false`
+```jsx
+<Form.Error name="" as={Text} />
+```
 
-- `handleValue`: Open with the developer tools open. `default: true`
+##### Props
 
-- `errorMessages`: Set a zoom factor to make the content larger or smaller. `default: true`
+| Prop   | Type                          | Description                                |
+| ------ | ----------------------------- | ------------------------------------------ |
+| `name` | String                        | Name of the field to render the error for. |
+| `as`   | Component _(Default: `Text`)_ | Component to render the input as.          |
 
-- `validator`: Set a zoom factor to make the content larger or smaller. `default: true`
+##### Render prop arguments
 
-### [type="submit]
+| Prop    | Type                                 | Description                                |
+| ------- | ------------------------------------ | ------------------------------------------ |
+| `error` | Object _(`{type: '', message: ''}`)_ | Error passed down from the form validation |
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+#### Form.State
 
-#### Options
+```jsx
+<Form.State as={React.Fragment} />
+```
 
-- `name`: Display the version number. `default: {}`
+##### Props
 
-- `onChangeKey`: Display version numbers of different internal components such `default: {}`
+| Prop | Type                                    | Description                       |
+| ---- | --------------------------------------- | --------------------------------- |
+| `as` | Component _(Default: `React.Fragment`)_ | Component to render the input as. |
 
-- `validateOnBlur`: Display usage instructions. `default: false`
+##### Render prop arguments
 
-- `submitOnLastField`: Open with the developer tools open. `default: true`
+| Prop     | Type   | Description                                        |
+| -------- | ------ | -------------------------------------------------- |
+| `values` | Object | Access to the internal values state from the form. |
+| `errors` | Array  | Access to the internal errors state from the form. |
 
-- `revalidateOnInput`: Set a zoom factor to make the content larger or smaller. `default: true`
+## Contribute
 
-## Validation
+First off, thanks for taking the time to contribute!
+Now, take a moment to be sure your contributions make sense to everyone else.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus fermentum risus, sit amet maximus enim laoreet non. Duis at neque non risus accumsan dignissim quis id erat. Donec erat elit, lobortis sit amet laoreet sed, congue at risus. Vivamus congue vitae nunc ut porttitor. Donec egestas aliquam purus, ut suscipit libero pulvinar viverra.
--->
+### Reporting Issues
 
-<!--
-// form usage
-// submitting
-// input props
-// submit + props and keys
-// validation
-// validation error messages
-// form props
-// setting validation errors
-// initialValues
-// initialProps
--->
+Found a problem? Want a new feature? First of all see if your issue or idea has [already been reported](../../issues).
+If not, just open a [new clear and descriptive issue](../../issues/new).
+
+### Submitting pull requests
+
+Pull requests are the greatest contributions, so be sure they are focused in scope, and do avoid unrelated commits.
+
+- Fork it!
+- Clone your fork: `git clone https://github.com/<your-username>/react-native-merlin`
+- Navigate to the newly cloned directory: `cd react-native-merlin`
+- Create a new branch for the new feature: `git checkout -b my-new-feature`
+- Install the tools necessary for development: `yarn`
+- Make your changes.
+- Commit your changes: `git commit -am 'Add some feature'`
+- Push to the branch: `git push origin my-new-feature`
+- Submit a pull request with full remarks documenting your changes.
+
+## License
+
+[MIT License](https://opensource.org/licenses/MIT) © [Harry Parton](https://harryparton.me/)
