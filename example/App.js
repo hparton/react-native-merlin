@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -43,8 +43,13 @@ const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
   </View>
 ));
 
+const CustomError = ({error}) => {
+  return <Text style={{color: 'red'}}>{error.message}</Text>;
+};
+
 const App: () => React$Node = () => {
   const [showExtraFields, setShowExtraFields] = useState(true);
+  const testRef = useRef();
 
   return (
     <>
@@ -55,6 +60,7 @@ const App: () => React$Node = () => {
         style={styles.scrollView}>
         <SafeAreaView>
           <Form
+            ref={testRef}
             values={initialValues}
             onSubmit={(values, {event, id}) => {
               console.log('Submitted! ', values, id);
@@ -81,7 +87,10 @@ const App: () => React$Node = () => {
                   error('customError', `Harry is the only valid username.`)
                 }
               />
+
               <Form.Error name="username" />
+
+              <Form.Error name="username" as={CustomError} />
 
               {showExtraFields && (
                 <Form.Input

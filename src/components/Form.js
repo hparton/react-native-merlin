@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import useInputRefs from '../hooks/useInputRefs'
 import { validate } from '../utils/validation'
 import { filterRelevant } from '../utils/inputs'
@@ -14,75 +19,89 @@ export const useForm = component => {
   return context
 }
 
-const Form = ({
-  children,
-  onSubmit,
-  onError,
-  values: _values = {},
-  errors: _errors = [],
-  watch = false,
-  watchValues = false,
-  watchErrors = false,
-}) => {
-  const [values, setValues] = useState(_values)
-  const [errors, setErrors] = useState(_errors)
-  const { registerInput, addInput, inputs, shouldRecalculate } = useInputRefs()
+const Form = forwardRef(
+  (
+    {
+      children,
+      onSubmit,
+      onError,
+      values: _values = {},
+      errors: _errors = [],
+      watch = false,
+      watchValues = false,
+      watchErrors = false,
+    },
+    ref
+  ) => {
+    const [values, setValues] = useState(_values)
+    const [errors, setErrors] = useState(_errors)
+    const {
+      registerInput,
+      addInput,
+      inputs,
+      shouldRecalculate,
+    } = useInputRefs()
 
-  useEffect(() => {
-    if (watch || watchValues) {
-      setValues(_values)
+    useEffect(() => {
+      if (watch || watchValues) {
+        setValues(_values)
+      }
+    }, [_values])
+
+    useEffect(() => {
+      if (watch || watchErrors) {
+        setErrors(_errors)
+      }
+    }, [_errors])
+
+    const validateAllFields = values => {
+      const errors = inputs
+        .map(input => validate(input, values[input.name], values))
+        .filter(v => v !== true)
+
+      const errorsMappedToNames = errors.reduce((errors, item) => {
+        errors[item.name] = item.error
+        return errors
+      }, {})
+
+      return { valid: !errors.length, errors: errorsMappedToNames }
     }
-  }, [_values])
 
-  useEffect(() => {
-    if (watch || watchErrors) {
-      setErrors(_errors)
+    const handleSubmit = (event, id) => {
+      const { valid, errors } = validateAllFields(values)
+      const inputNames = inputs.map(input => input.name)
+      const relevantValues = filterRelevant(values, inputNames)
+
+      if (valid) {
+        onSubmit && onSubmit(relevantValues, { event, id })
+      } else {
+        setErrors(errors)
+        onError && onError(errors, { event, id })
+      }
     }
-  }, [_errors])
 
-  const validateAllFields = values => {
-    const errors = inputs
-      .map(input => validate(input, values[input.name], values))
-      .filter(v => v !== true)
+    useImperativeHandle(ref, () => ({
+      submit: handleSubmit,
+    }))
 
-    const errorsMappedToNames = errors.reduce((errors, item) => {
-      errors[item.name] = item.error
-      return errors
-    }, {})
-
-    return { valid: !errors.length, errors: errorsMappedToNames }
+    return (
+      <FormContext.Provider
+        value={{
+          values,
+          setValues,
+          errors,
+          setErrors,
+          inputs,
+          registerInput,
+          addInput,
+          shouldRecalculate,
+          handleSubmit,
+        }}
+      >
+        {children}
+      </FormContext.Provider>
+    )
   }
-
-  const handleSubmit = (event, id) => {
-    const { valid, errors } = validateAllFields(values)
-    const inputNames = inputs.map(input => input.name)
-    const relevantValues = filterRelevant(values, inputNames)
-
-    if (valid) {
-      onSubmit && onSubmit(relevantValues, { event, id })
-    } else {
-      setErrors(errors)
-      onError && onError(errors, { event, id })
-    }
-  }
-
-  return (
-    <FormContext.Provider
-      value={{
-        values,
-        setValues,
-        errors,
-        setErrors,
-        inputs,
-        registerInput,
-        addInput,
-        shouldRecalculate,
-        handleSubmit,
-      }}
-    >
-      {children}
-    </FormContext.Provider>
-  )
-}
+)
 
 export default Form
