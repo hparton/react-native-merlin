@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 const useInputRefs = () => {
+  const inputs = useRef([])
   const [inputCount, setInputCount] = useState(0)
-  const [inputs, setInputs] = useState([])
   const [shouldRecalculate, setShouldRecalculate] = useState(false)
 
   const registerInput = props => {
@@ -12,7 +12,7 @@ const useInputRefs = () => {
       )
     }
 
-    setInputs(current => [...current, { ...props }])
+    inputs.current = [...inputs.current, { ...props }]
   }
 
   const addInput = () => {
@@ -24,7 +24,8 @@ const useInputRefs = () => {
   }
 
   useEffect(() => {
-    setInputs([])
+    inputs.current = []
+
     if (inputCount) {
       setShouldRecalculate(true)
     }
@@ -39,7 +40,7 @@ const useInputRefs = () => {
   return {
     registerInput,
     addInput,
-    inputs,
+    inputs: inputs.current,
     shouldRecalculate,
   }
 }
