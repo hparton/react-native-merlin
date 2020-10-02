@@ -4,8 +4,10 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react'
+
 import useInputRefs from '../hooks/useInputRefs'
-import { validate } from '../utils/validation'
+
+import { validate, error } from '../utils/validation'
 import { filterRelevant } from '../utils/inputs'
 
 const FormContext = React.createContext()
@@ -26,7 +28,7 @@ const Form = forwardRef(
       onSubmit,
       onError,
       values: _values = {},
-      errors: _errors = [],
+      errors: _errors = {},
       watch = false,
       watchValues = false,
       watchErrors = false,
@@ -82,6 +84,7 @@ const Form = forwardRef(
 
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
+      addErrors: closure => setErrors(obj => ({ ...obj, ...closure(error) })),
     }))
 
     return (
