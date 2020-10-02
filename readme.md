@@ -115,7 +115,7 @@ const submit = formRef.current && formRef.current.submit()
   <Form ref={formRef}>
     {/* Your content goes here*/}
   </Form>
-  <Button title="Submit" onPress={submit}>
+  <Button title="Submit" onPress={submit} />
 </View>
 ```
 
