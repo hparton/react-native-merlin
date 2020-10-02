@@ -64,7 +64,7 @@ const ExampleScreen = () => {
     >
       <Form.Input as={TextInput} name="username" />
       <Form.Input as={TextInput} name="password" required secureTextEntry={true} />
-      <Form.Submit as={Button} title="Submit">
+      <Form.Submit as={Button} title="Submit" />
     </Form>
   )
 }
