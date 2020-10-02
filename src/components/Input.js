@@ -41,6 +41,13 @@ const Input = ({
       values
     )
 
+    // TODO: Add prop to only revalidate fields with errors or something like that?
+    // Would be useful to not trigger validation as the user is starting to type.
+    // const onlyRevalidateWithError = true
+    // if (!errors?.[name] && onlyRevalidateWithError) {
+    //   return
+    // }
+
     if (validated === true && errors?.[name]) {
       setErrors(current => {
         delete current[name]
