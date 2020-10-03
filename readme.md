@@ -170,16 +170,17 @@ const clearAll = () => form.clearErrors()
 
 ##### Props
 
-| Prop         | Type                               | Description                                                                 |
-| ------------ | ---------------------------------- | --------------------------------------------------------------------------- |
-| `name`       | String                             | Name for the input when mapped in to the form values.                       |
-| `as`         | Component _(Default: `TextInput`)_ | Component to render the input as.                                           |
-| `eventKey`   | String _(Default: `onChangeText`)_ | Event from the input to listen to for value updates.                        |
-| `parseValue` | Function                           | Function to handle input values before updating them in the form.           |
-| `required`   | Boolean _(Default: `false`)_       | Field is required to not be falsey to submit the form.                      |
-| `maxLength`  | Number                             | Field is required to be under the maxLength to submit the form.             |
-| `minLength`  | Number                             | Field is required to be over the minLength to submit the form.              |
-| `validator`  | Function                           | Custom validation function, return `true` to pass or return a custom error. |
+| Prop                | Type                               | Description                                                                                                                               |
+| ------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`              | String                             | Name for the input when mapped in to the form values.                                                                                     |
+| `as`                | Component _(Default: `TextInput`)_ | Component to render the input as.                                                                                                         |
+| `eventKey`          | String _(Default: `onChangeText`)_ | Event from the input to listen to for value updates.                                                                                      |
+| `parseValue`        | Function                           | Function to handle input values before updating them in the form.                                                                         |
+| `instantValidation` | Boolean _(Default: `false`)_       | Should we start validating as soon as the user starts changing the input or only re-validate if we currently have an error for the field. |
+| `required`          | Boolean _(Default: `false`)_       | Field is required to not be falsey to submit the form.                                                                                    |
+| `maxLength`         | Number                             | Field is required to be under the maxLength to submit the form.                                                                           |
+| `minLength`         | Number                             | Field is required to be over the minLength to submit the form.                                                                            |
+| `validator`         | Function                           | Custom validation function, return `true` to pass or return a custom error.                                                               |
 
 ##### Custom validator
 
