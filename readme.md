@@ -121,29 +121,30 @@ const ExampleScreen = () => {
 
 ```jsx
 const formRef = useRef()
+const form = formRef.current
 
 // Submit the form from outside the form context
-const submit = () => formRef.current && formRef.current.submit()
+const submit = () => form.submit()
 
 // Add external errors.
-const externalErrors = () => formRef.current && formRef.current.addErrors(error => {
+const externalErrors = () => form.addErrors(error => {
   return {
     username: error('externalUsername', 'Username is not foo!')
   }
 }
 
 // Clear specific errors
-const clear = () => formRef.current && formRef.current.clearErrors(['username'])
+const clear = () => form.clearErrors(['username'])
 // Clear all errors
-const clearAll = () => formRef.current && formRef.current.clearErrors()
+const clearAll = () => form.clearErrors()
 
 <View>
   <Form ref={formRef}>
     <Form.Input name="username" required />
-    <Form.Error name="username>
+    <Form.Error name="username />
     <Form.Input name="password" secureTextInput />
-    <Form.Error name="password>
-    <Form.Submit title="Submit">
+    <Form.Error name="password />
+    <Form.Submit title="Submit" />
   </Form>
 
   <Button title="Submit" onPress={submit} />
