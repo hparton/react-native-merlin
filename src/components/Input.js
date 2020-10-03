@@ -14,6 +14,7 @@ const Input = ({
   minLength,
   maxLength,
   validator,
+  instantValidation = false,
   name,
   onSubmitEditing,
   ...passThrough
@@ -34,6 +35,10 @@ const Input = ({
   const onEvent = v => {
     let value = parseValue ? parseValue(v) : v
     setValues(current => ({ ...current, [name]: value }))
+
+    if (!errors?.[name] && !instantValidation) {
+      return
+    }
 
     const validated = validate(
       { name, ref, required, minLength, maxLength, validator },
