@@ -48,21 +48,27 @@ yarn add react-native-merlin
 ## Usage
 
 ```js
-import {TextInput, Button} from 'react-native'
+import { TextInput, Button } from 'react-native'
 import Form from 'react-native-merlin'
 
 const ExampleScreen = () => {
   return (
     <Form
       onSubmit={values => {
-        console.log('Form submitted! ', values);
+        console.log('Form submitted! ', values)
       }}
       onError={errors => {
         console.log('Form submission failed! ', errors)
       }}
     >
       <Form.Input as={TextInput} name="username" />
-      <Form.Input as={TextInput} name="password" required secureTextEntry={true} />
+      <Form.Input
+        as={TextInput}
+        name="password"
+        required
+        secureTextEntry={true}
+        // all other props are passed through
+      />
       <Form.Submit as={Button} title="Submit" />
     </Form>
   )
@@ -105,25 +111,46 @@ const ExampleScreen = () => {
 | `watchValues` | Boolean _(Default: `false`)_ | Should the form update internal state if `values` changes.                     |
 | `watchErrors` | Boolean _(Default: `false`)_ | Should the form update internal state if `errors` changes.                     |
 
+##### Ref props
+
+| Prop          | Type     | Description                                                                                                        |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `submit`      | Function | Submit the form from outside of the form context.                                                                  |
+| `addErrors`   | Function | Add additional errors to the internal form errors, for instance from an external api.                              |
+| `clearErrors` | Function | Clear errors from the internal form errors, pass an array of names to specify what to remove or remove everything. |
+
 ```jsx
 const formRef = useRef()
 
+// Submit the form from outside the form context
 const submit = () => formRef.current && formRef.current.submit()
+
+// Add external errors.
+const externalErrors = () => formRef.current && formRef.current.addErrors(error => {
+  return {
+    username: error('externalUsername', 'Username is not foo!')
+  }
+}
+
+// Clear specific errors
+const clear = () => formRef.current && formRef.current.clearErrors(['username'])
+// Clear all errors
+const clearAll = () => formRef.current && formRef.current.clearErrors()
 
 <View>
   <Form ref={formRef}>
-    {/* Your content goes here*/}
+    <Form.Input name="username" required />
+    <Form.Error name="username>
+    <Form.Input name="password" secureTextInput />
+    <Form.Error name="password>
+    <Form.Submit title="Submit">
   </Form>
+
   <Button title="Submit" onPress={submit} />
+  <Button title="Add Errors" onPress={externalErrors} />
+  <Button title="Clear Errors" onPress={clear} />
 </View>
 ```
-
-##### Ref props
-
-| Prop        | Type     | Description                                                                           |
-| ----------- | -------- | ------------------------------------------------------------------------------------- |
-| `submit`    | Function | Submit the form from outside of the form context.                                     |
-| `addErrors` | Function | Add additional errors to the internal form errors, for instance from an external api. |
 
 #### Form.Input
 
