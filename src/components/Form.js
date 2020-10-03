@@ -4,8 +4,10 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react'
+
 import useInputRefs from '../hooks/useInputRefs'
-import { validate } from '../utils/validation'
+
+import { validate, error } from '../utils/validation'
 import { filterRelevant } from '../utils/inputs'
 
 const FormContext = React.createContext()
@@ -26,13 +28,14 @@ const Form = forwardRef(
       onSubmit,
       onError,
       values: _values = {},
-      errors: _errors = [],
+      errors: _errors = {},
       watch = false,
       watchValues = false,
       watchErrors = false,
     },
     ref
   ) => {
+    const [submitting, setSubmitting] = useState(false)
     const [values, setValues] = useState(_values)
     const [errors, setErrors] = useState(_errors)
     const {
@@ -67,26 +70,32 @@ const Form = forwardRef(
       return { valid: !errors.length, errors: errorsMappedToNames }
     }
 
-    const handleSubmit = (event, id) => {
+    const handleSubmit = async (event, id) => {
       const { valid, errors } = validateAllFields(values)
       const inputNames = inputs.map(input => input.name)
       const relevantValues = filterRelevant(values, inputNames)
 
+      setSubmitting(true)
+
       if (valid) {
-        onSubmit && onSubmit(relevantValues, { event, id })
+        onSubmit && (await onSubmit(relevantValues, { event, id }))
       } else {
         setErrors(errors)
-        onError && onError(errors, { event, id })
+        onError && (await onError(errors, { event, id }))
       }
+
+      setSubmitting(false)
     }
 
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
+      addErrors: closure => setErrors(obj => ({ ...obj, ...closure(error) })),
     }))
 
     return (
       <FormContext.Provider
         value={{
+          submitting,
           values,
           setValues,
           errors,

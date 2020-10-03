@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Simple web like forms in react native.
+  Simple web-like forms in react native.
 </p>
 
 <p align="center"> 
@@ -16,7 +16,7 @@
 
 ## About
 
-Merlin is still in early beta, It's in a few apps currently in development and the API is mostly stable but there may be a few breaking changes between now and release. It's not recommended for use in a critical production app but feel free to tinker with it.
+Merlin is still in early beta, It's in a few apps currently in development and the API is mostly stable but there may be a few breaking changes between now and release.
 
 ### Features
 
@@ -30,7 +30,6 @@ Merlin is still in early beta, It's in a few apps currently in development and t
 
 - 100% test coverage.
 - Async form validators.
-- Async submission handling.
 
 ...and more in the future.
 
@@ -64,7 +63,7 @@ const ExampleScreen = () => {
     >
       <Form.Input as={TextInput} name="username" />
       <Form.Input as={TextInput} name="password" required secureTextEntry={true} />
-      <Form.Submit as={Button} title="Submit">
+      <Form.Submit as={Button} title="Submit" />
     </Form>
   )
 }
@@ -84,8 +83,8 @@ const ExampleScreen = () => {
 <Form
   onSubmit={}
   onError={}
-  values={[]}
-  errors={[]}
+  values={{}}
+  errors={{}}
   watch={false}
   watchValues={false}
   watchErrors={false}
@@ -101,10 +100,30 @@ const ExampleScreen = () => {
 | `onSubmit`    | Function                     | Function to call when the form passes validation on submission.                |
 | `onError`     | Function                     | Function to call when the form fails validation on submission.                 |
 | `values`      | Object _(Default: `{}`)_     | External values to pass to the form for the inputs to use as an initial value. |
-| `errors`      | Array _(Default: `[]`)_      | External errors to pass to the form for the inputs to use as an initial error. |
+| `errors`      | Array _(Default: `{}`)_      | External errors to pass to the form for the inputs to use as an initial error. |
 | `watch`       | Boolean _(Default: `false`)_ | Should the form update internal state if `values` or `errors` changes.         |
 | `watchValues` | Boolean _(Default: `false`)_ | Should the form update internal state if `values` changes.                     |
 | `watchErrors` | Boolean _(Default: `false`)_ | Should the form update internal state if `errors` changes.                     |
+
+```jsx
+const formRef = useRef()
+
+const submit = () => formRef.current && formRef.current.submit()
+
+<View>
+  <Form ref={formRef}>
+    {/* Your content goes here*/}
+  </Form>
+  <Button title="Submit" onPress={submit} />
+</View>
+```
+
+##### Ref props
+
+| Prop        | Type     | Description                                                                           |
+| ----------- | -------- | ------------------------------------------------------------------------------------- |
+| `submit`    | Function | Submit the form from outside of the form context.                                     |
+| `addErrors` | Function | Add additional errors to the internal form errors, for instance from an external api. |
 
 #### Form.Input
 
@@ -133,6 +152,21 @@ const ExampleScreen = () => {
 | `maxLength`  | Number                             | Field is required to be under the maxLength to submit the form.             |
 | `minLength`  | Number                             | Field is required to be over the minLength to submit the form.              |
 | `validator`  | Function                           | Custom validation function, return `true` to pass or return a custom error. |
+
+##### Custom validator
+
+```js
+const validator = (v, error, values) => {
+  // Either return an error to fail or nothing/true to pass.
+  // You can get access to other form values from values
+
+  if (v !== 'Foo') {
+    return error('notFoo', 'Thats not foo!')
+  }
+
+  return true
+}
+```
 
 #### Form.Submit
 
@@ -181,10 +215,11 @@ const ExampleScreen = () => {
 
 ##### Render prop arguments
 
-| Prop     | Type   | Description                                        |
-| -------- | ------ | -------------------------------------------------- |
-| `values` | Object | Access to the internal values state from the form. |
-| `errors` | Array  | Access to the internal errors state from the form. |
+| Prop         | Type    | Description                                        |
+| ------------ | ------- | -------------------------------------------------- |
+| `values`     | Object  | Access to the internal values state from the form. |
+| `errors`     | Array   | Access to the internal errors state from the form. |
+| `submitting` | Boolean | Is the form currently submitting.                  |
 
 ## Contribute
 

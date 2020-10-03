@@ -17,6 +17,7 @@ import {
   TextInput,
   Switch,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -35,6 +36,13 @@ const reverseString = value => {
   return [arr[arr.length - 1], ...arr.slice(0, -1)].join('');
 };
 
+const passwordsMatch = (v, error, values) => {
+  return v !== values.password && error('dontMatch', "Passwords don't match");
+};
+
+const nameIsHarry = (v, error) =>
+  v !== 'Harry' && error('customError', `Harry is the only valid username.`);
+
 const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
   <View>
     {label && <Text style={styles.label}>{label}</Text>}
@@ -42,6 +50,8 @@ const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
     {error && <Text>{error.message}</Text>}
   </View>
 ));
+
+const wait = duration => new Promise(success => setTimeout(success, duration));
 
 const CustomError = ({error}) => {
   return <Text style={{color: 'red'}}>{error.message}</Text>;
@@ -62,7 +72,8 @@ const App: () => React$Node = () => {
           <Form
             ref={testRef}
             values={initialValues}
-            onSubmit={(values, {event, id}) => {
+            onSubmit={async (values, {event, id}) => {
+              await wait(2000);
               console.log('Submitted! ', values, id);
             }}
             onError={errors => console.log('Submission Failed! ', errors)}>
@@ -71,6 +82,14 @@ const App: () => React$Node = () => {
               <Switch
                 value={showExtraFields}
                 onValueChange={() => setShowExtraFields(current => !current)}
+              />
+              <Button
+                title="Add External Errors"
+                onPress={() => {
+                  testRef.current.addErrors(error => ({
+                    username: error('apiError', 'Error from the api!'),
+                  }));
+                }}
               />
             </View>
 
@@ -82,10 +101,7 @@ const App: () => React$Node = () => {
                 required
                 maxLength={20}
                 minLength={5}
-                validator={(v, {error, values}) =>
-                  v !== 'Harry' &&
-                  error('customError', `Harry is the only valid username.`)
-                }
+                validator={nameIsHarry}
               />
 
               <Form.Error name="username" />
@@ -108,6 +124,16 @@ const App: () => React$Node = () => {
                 as={StyledTextInput}
                 label="Password"
                 name="password"
+                secureTextEntry={true}
+                required
+              />
+
+              <Form.Input
+                style={styles.input}
+                as={StyledTextInput}
+                label="Confirm Password"
+                name="password_confirmation"
+                validator={passwordsMatch}
                 secureTextEntry={true}
                 required
               />
@@ -149,9 +175,12 @@ const App: () => React$Node = () => {
 
             <View style={styles.sectionContainer}>
               <Form.State>
-                {({values}) => {
+                {({values, submitting}) => {
                   return (
-                    <Form.Submit title="Submit" disabled={empty(values)} />
+                    <Form.Submit
+                      title={submitting ? 'Submitting...' : 'Submit'}
+                      disabled={empty(values) || submitting}
+                    />
                   );
                 }}
               </Form.State>
