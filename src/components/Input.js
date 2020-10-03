@@ -14,6 +14,7 @@ const Input = ({
   minLength,
   maxLength,
   validator,
+  instantValidation = false,
   name,
   onSubmitEditing,
   ...passThrough
@@ -35,18 +36,15 @@ const Input = ({
     let value = parseValue ? parseValue(v) : v
     setValues(current => ({ ...current, [name]: value }))
 
+    if (!errors?.[name] && !instantValidation) {
+      return
+    }
+
     const validated = validate(
       { name, ref, required, minLength, maxLength, validator },
       v,
       values
     )
-
-    // TODO: Add prop to only revalidate fields with errors or something like that?
-    // Would be useful to not trigger validation as the user is starting to type.
-    // const onlyRevalidateWithError = true
-    // if (!errors?.[name] && onlyRevalidateWithError) {
-    //   return
-    // }
 
     if (validated === true && errors?.[name]) {
       setErrors(current => {
