@@ -9,6 +9,7 @@ import useInputRefs from '../hooks/useInputRefs'
 
 import { validate, error } from '../utils/validation'
 import { filterRelevant } from '../utils/inputs'
+import { omit } from '../utils/object'
 
 const FormContext = React.createContext()
 
@@ -90,6 +91,14 @@ const Form = forwardRef(
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
       addErrors: closure => setErrors(obj => ({ ...obj, ...closure(error) })),
+      clearErrors: (names = []) => {
+        if (Array.isArray(names) && names.length) {
+          setErrors(current => omit(current, names))
+          return
+        }
+
+        setErrors({})
+      },
     }))
 
     return (

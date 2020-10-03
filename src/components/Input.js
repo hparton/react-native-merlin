@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react'
 import { TextInput } from 'react-native'
 import { getReturnKeyType, getNextFocusableInput } from '../utils/inputs'
+import { omit } from '../utils/object'
 import { validate } from '../utils/validation'
 import { useForm } from './Form'
 
@@ -47,10 +48,7 @@ const Input = ({
     )
 
     if (validated === true && errors?.[name]) {
-      setErrors(current => {
-        delete current[name]
-        return current
-      })
+      setErrors(current => omit(current, [name]))
     } else {
       setErrors(current => ({
         ...current,

@@ -48,21 +48,27 @@ yarn add react-native-merlin
 ## Usage
 
 ```js
-import {TextInput, Button} from 'react-native'
+import { TextInput, Button } from 'react-native'
 import Form from 'react-native-merlin'
 
 const ExampleScreen = () => {
   return (
     <Form
       onSubmit={values => {
-        console.log('Form submitted! ', values);
+        console.log('Form submitted! ', values)
       }}
       onError={errors => {
         console.log('Form submission failed! ', errors)
       }}
     >
       <Form.Input as={TextInput} name="username" />
-      <Form.Input as={TextInput} name="password" required secureTextEntry={true} />
+      <Form.Input
+        as={TextInput}
+        name="password"
+        required
+        secureTextEntry={true}
+        // all other props are passed through
+      />
       <Form.Submit as={Button} title="Submit" />
     </Form>
   )
@@ -120,10 +126,11 @@ const submit = () => formRef.current && formRef.current.submit()
 
 ##### Ref props
 
-| Prop        | Type     | Description                                                                           |
-| ----------- | -------- | ------------------------------------------------------------------------------------- |
-| `submit`    | Function | Submit the form from outside of the form context.                                     |
-| `addErrors` | Function | Add additional errors to the internal form errors, for instance from an external api. |
+| Prop          | Type     | Description                                                                                                        |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `submit`      | Function | Submit the form from outside of the form context.                                                                  |
+| `addErrors`   | Function | Add additional errors to the internal form errors, for instance from an external api.                              |
+| `clearErrors` | Function | Clear errors from the internal form errors, pass an array of names to specify what to remove or remove everything. |
 
 #### Form.Input
 
