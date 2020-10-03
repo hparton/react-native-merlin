@@ -16,7 +16,7 @@
 
 ## About
 
-Merlin is still in early beta, It's in a few apps currently in development and the API is mostly stable but there may be a few breaking changes between now and release. It's not recommended for use in a critical production app but feel free to tinker with it.
+Merlin is still in early beta, It's in a few apps currently in development and the API is mostly stable but there may be a few breaking changes between now and release.
 
 ### Features
 
@@ -109,7 +109,7 @@ const ExampleScreen = () => {
 ```jsx
 const formRef = useRef()
 
-const submit = formRef.current && formRef.current.submit()
+const submit = () => formRef.current && formRef.current.submit()
 
 <View>
   <Form ref={formRef}>
@@ -216,10 +216,11 @@ const validator = (v, error, values) => {
 
 ##### Render prop arguments
 
-| Prop     | Type   | Description                                        |
-| -------- | ------ | -------------------------------------------------- |
-| `values` | Object | Access to the internal values state from the form. |
-| `errors` | Array  | Access to the internal errors state from the form. |
+| Prop         | Type    | Description                                        |
+| ------------ | ------- | -------------------------------------------------- |
+| `values`     | Object  | Access to the internal values state from the form. |
+| `errors`     | Array   | Access to the internal errors state from the form. |
+| `submitting` | Boolean | Is the form currently submitting.                  |
 
 ## Contribute
 

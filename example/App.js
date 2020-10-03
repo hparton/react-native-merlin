@@ -51,6 +51,8 @@ const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
   </View>
 ));
 
+const wait = duration => new Promise(success => setTimeout(success, duration));
+
 const CustomError = ({error}) => {
   return <Text style={{color: 'red'}}>{error.message}</Text>;
 };
@@ -70,7 +72,8 @@ const App: () => React$Node = () => {
           <Form
             ref={testRef}
             values={initialValues}
-            onSubmit={(values, {event, id}) => {
+            onSubmit={async (values, {event, id}) => {
+              await wait(2000);
               console.log('Submitted! ', values, id);
             }}
             onError={errors => console.log('Submission Failed! ', errors)}>
@@ -172,9 +175,12 @@ const App: () => React$Node = () => {
 
             <View style={styles.sectionContainer}>
               <Form.State>
-                {({values}) => {
+                {({values, submitting}) => {
                   return (
-                    <Form.Submit title="Submit" disabled={empty(values)} />
+                    <Form.Submit
+                      title={submitting ? 'Submitting...' : 'Submit'}
+                      disabled={empty(values) || submitting}
+                    />
                   );
                 }}
               </Form.State>

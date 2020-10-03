@@ -35,6 +35,7 @@ const Form = forwardRef(
     },
     ref
   ) => {
+    const [submitting, setSubmitting] = useState(false)
     const [values, setValues] = useState(_values)
     const [errors, setErrors] = useState(_errors)
     const {
@@ -69,17 +70,21 @@ const Form = forwardRef(
       return { valid: !errors.length, errors: errorsMappedToNames }
     }
 
-    const handleSubmit = (event, id) => {
+    const handleSubmit = async (event, id) => {
       const { valid, errors } = validateAllFields(values)
       const inputNames = inputs.map(input => input.name)
       const relevantValues = filterRelevant(values, inputNames)
 
+      setSubmitting(true)
+
       if (valid) {
-        onSubmit && onSubmit(relevantValues, { event, id })
+        onSubmit && (await onSubmit(relevantValues, { event, id }))
       } else {
         setErrors(errors)
-        onError && onError(errors, { event, id })
+        onError && (await onError(errors, { event, id }))
       }
+
+      setSubmitting(false)
     }
 
     useImperativeHandle(ref, () => ({
@@ -90,6 +95,7 @@ const Form = forwardRef(
     return (
       <FormContext.Provider
         value={{
+          submitting,
           values,
           setValues,
           errors,
