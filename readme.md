@@ -30,7 +30,6 @@ Merlin is still in early beta, It's in a few apps currently in development and t
 
 - 100% test coverage.
 - Async form validators.
-- Async submission handling.
 
 ...and more in the future.
 
