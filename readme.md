@@ -28,12 +28,13 @@ Merlin is still in early beta, It's in a few apps currently in development and t
 
 ### Roadmap
 
-- 100% test coverage.
 - Async form validators.
 
 ...and more in the future.
 
 ---
+
+<br />
 
 ## Installation
 
@@ -44,6 +45,8 @@ npm install react-native-merlin
 #yarn
 yarn add react-native-merlin
 ```
+
+<br />
 
 ## Usage
 
@@ -254,6 +257,8 @@ const [values, setValues] = useState({
 
 ```
 
+<br />
+
 ## Components
 
 - [Form](#form)
@@ -261,6 +266,8 @@ const [values, setValues] = useState({
 - [Form.Submit](#formsubmit)
 - [Form.Error](#formerror)
 - [Form.State](#formstate)
+
+<br />
 
 #### Form
 
@@ -332,6 +339,8 @@ const clearAll = () => form.clearErrors()
 </View>
 ```
 
+<br />
+
 #### Form.Input
 
 ```jsx
@@ -377,6 +386,8 @@ const validator = (v, error, values) => {
 }
 ```
 
+<br />
+
 #### Form.Submit
 
 ```jsx
@@ -410,6 +421,8 @@ const validator = (v, error, values) => {
 | ------- | ------------------------------------ | ------------------------------------------ |
 | `error` | Object _(`{type: '', message: ''}`)_ | Error passed down from the form validation |
 
+<br />
+
 #### Form.State
 
 ```jsx
@@ -429,6 +442,8 @@ const validator = (v, error, values) => {
 | `values`     | Object  | Access to the internal values state from the form. |
 | `errors`     | Array   | Access to the internal errors state from the form. |
 | `submitting` | Boolean | Is the form currently submitting.                  |
+
+<br />
 
 ## Contribute
 
