@@ -185,7 +185,7 @@ Merlin gives you some default error messages out of the box but sometimes these 
       name="password_confirmation" 
       required 
       messages={{
-        required: 'Password Confirmation is a required field.'
+        required: 'Password Confirmation is a required field.',
         notFoo: ({name, value}) => `This can also be a function that returns a string with the ${name}`
       }} 
     />
