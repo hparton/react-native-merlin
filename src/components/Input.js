@@ -9,6 +9,7 @@ const Input = ({
   as = TextInput,
   children,
   eventKey = 'onChangeText',
+  valueKey = 'value',
   parseValue,
   multiline,
   required,
@@ -82,7 +83,7 @@ const Input = ({
   const merlinProps = {
     ref,
     [eventKey]: onEvent,
-    value: values?.[name] || undefined,
+    [valueKey]: values?.[name] || undefined,
     error: errors?.[name] || undefined,
     ...(multiline && { multiline }),
     returnKeyType,

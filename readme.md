@@ -47,32 +47,211 @@ yarn add react-native-merlin
 
 ## Usage
 
-```js
-import { TextInput, Button } from 'react-native'
-import Form from 'react-native-merlin'
+Merlin takes care of state management for you. At it's most basic it looks like this:
 
-const ExampleScreen = () => {
-  return (
-    <Form
-      onSubmit={values => {
-        console.log('Form submitted! ', values)
-      }}
-      onError={errors => {
-        console.log('Form submission failed! ', errors)
-      }}
-    >
-      <Form.Input as={TextInput} name="username" />
-      <Form.Input
-        as={TextInput}
-        name="password"
-        required
-        secureTextEntry={true}
-        // all other props are passed through
-      />
-      <Form.Submit as={Button} title="Submit" />
-    </Form>
-  )
+```js
+<Form onSubmit={values => console.log(values)}>
+    <Form.Input name="username" required />
+    <Form.Submit title="Submit" />
+</Form>
+```
+
+This will render out a `FormProvider` to hold your form state, an input which defaults to a `TextInput` and a submit button which defaults to a `Button`. It also handles some basic validation whilst giving you a framework to build on top of.
+
+<br />
+
+### Handling Form Submissions
+
+It's not much use to have a form that just console logs out some values if it's valid and does nothing if there is an error so we need to add some logic around that. First up is showing any relvant errors to the user using `<Form.Error>`.
+
+```js
+<Form 
+    onSubmit={values => console.log(values)}
+    onError={errors => console.log(errors)}
+>
+    <Form.Input name="username" required />
+    <Form.Error name="username" />
+    <Form.Submit title="Submit" />
+</Form>
+```
+
+This will render out a `Text` element if there are any errors that match the input name, these can be placed anywhere inside the `<Form>` parent.
+
+The other change we made was adding the `onError` prop so we know when the form submission failed due to a validation error. We can then report this back to other parts of the app or to an external service.
+
+Currently the validation will only run on an input when the form is submitted or when the input changes and it already has an error, this is the default behaviour so we don't start trying to validate as the user starts typing which is bad UX. If you need this on certain fields that need feedback as you type(such as a password strength indicator). Then you can use the `instantValidation` prop which will run the validator on every change.
+
+<br/>
+
+### Async Form Submissions
+
+Your form submission is most likely going to post off to a backend and take a second or two to finish submitting. In this time you might want to disable the form from being submitted again or display something to the user so they know it's working away in the background. Merlin makes this simple, just provide an async function as the `onSubmit` handler and Merlin will wait until it resolves.
+
+To get access to the current form state you can use `<Form.State>` and a render function.
+
+```js
+const wait = duration => new Promise(success => setTimeout(success, duration));
+const handleSubmit = async (values) => {
+    await wait(2000); // this is where you would do your post instead.
+    console.log('Submitted! ', values);
 }
+
+<Form 
+    onSubmit={handleSubmit}
+>
+    <Form.Input name="username" required />
+    <Form.Error name="username" />
+    <Form.State>
+        {({submitting}) => (
+            <Form.Submit disabled={submitting} title={submitting ? 'Submitting...' : 'Submit'} />
+        )}
+    </Form.State>
+</Form>
+```
+
+<br />
+
+### Integrating with external validation errors
+
+If you are submitting to an external service you will probably get some validation errors back if your local validation doesn't quite match the servers. Not to worry, you can handle this with a bit of extra work in Merlin. First we need to add a `ref` to the form so we can get access to a few helper methods.
+
+Then we can use the `addErrors` helper to add our external errors.
+
+```js
+const formRef = useRef(null)
+const wait = duration => new Promise((success, fail) => setTimeout(fail, duration));
+const handleSubmit = async (values) => {
+    try {
+        await wait(2000); // this is where you would do your post instead.
+    } catch (e) {
+        testRef.current.addErrors(error => ({
+            username: error('externalError', 'Error from the api!'),
+        }));
+    }
+}
+
+<Form
+    ref={formRef}
+    onSubmit={handleSubmit}
+>
+    <Form.Input name="username" required />
+    <Form.Submit title="Submit" />
+</Form>
+```
+
+
+<br />
+
+### Using Custom Validators
+
+Merlin ships with some basic validators loosely based on the built in HTML5 form validation. Currently just `required`, `minLength` and `maxLength` but these will be expanded on in the future if needed to cover more common use cases. If you need to expand beyond this and want to integrate your own validators it's very simple. Just add a `validator` prop to the `<Form.Input>`.
+
+```js
+const isNotFoo = (value, error) => value !== 'Foo' && error('notFoo', `Value should not be Foo.`);
+
+<Form onError={errors => console.log(errors)}>
+    <Form.Input name="username" required validator={isNotFoo} />
+    <Form.Submit title="Submit" />
+</Form>
+```
+
+A validator is provided `(value, error, values)`.
+
+`value` is the current value of the field you  are running the validator on. `error` is a helper to return an error in the format that Merlin expects. The first argument is the type of error and the second is the message and `values` gives you access to other values in the form in case you need them to do a comparision. A great example of this is password matching for a confirmation field.
+
+```js
+const confirmPassword = (value, error, values) => value !== values.password && error('passwordMismatch', "Passwords don't match");
+
+<Form onError={errors => console.log(errors)}>
+    <Form.Input name="password" required />
+    <Form.Input name="password_confirmation" required validator={confirmPassword} />
+    <Form.Error name="password_confirmation">
+</Form>
+```
+
+<br />
+
+### Using Custom Inputs
+Just using the built in inputs provided by `react-native` won't get you very far when it comes to styling up you form, adding custom functionality or integrating 3rd party inputs.
+
+You can specify what the `<Form.Input>` should render as by providing the `as` prop. Merlin will then render the input using that component instead and pass along all the props you defined as well as any props managed by Merlin (such as the `value` or `error` for the field).
+
+```js
+<Form onSubmit={values => console.log(values)}>
+    <Form.Input as={StyledTextInput} name="username" label="User" required />
+    <Form.Submit as={Button} title="Submit" />
+</Form>
+```
+
+And this is what the `StyledTextInput` would look like. You need to make sure to use `forwardRef` to pass along the ref handled by Merlin onto the actual input you want to use.
+
+```js
+const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
+  <View>
+    {label && <Text style={styles.label}>{label}</Text>}
+    <TextInput {...props} ref={ref} />
+    {error && <Text>{error.message}</Text>}
+  </View>
+));
+```
+
+If you're using a third party component or integrating an existing component you may need to tell Merlin how to integrate with your input properly. There are a few ways that you can do this. This example uses a `Switch` component from `react-native`.
+
+```js
+<Form.Input
+    as={Switch}
+    name="example"
+    required
+    valueKey="value"
+    eventKey="onValueChange"
+    parseValue={value => value ? 1 : 0}
+/>
+```
+
+Here we are making use of `valueKey` to tell Merlin what prop the component expects the form value as, `eventKey` to know what to listen to so we can update the form state and `parseValue` to transform the value before we put it in the form state. In this instance we are converting the `Boolean` to a `Number` but it could be anything. Using these three props makes it possible to integrate almost any component directly into Merlin.
+
+<br />
+
+### Using External State
+
+If you don't want to manage your state locally using Merlin but still want all the other benefits then you can pass in `values` and `errors` to the `<Form>` component.
+
+```js
+
+const initialValues = {
+  username: 'Arthur',
+};
+
+<Form
+    values={initialValues}
+>
+    <Form.Input name="username" />
+    <Form.Submit title="Submit">
+</Form>
+
+```
+
+By default this will just set the initial state of the form on the first render to match those values but you can ensure that the form stays up to date with any changes by passing the `watch` prop. You can also watch values and errors separately with `watchValues` and `watchErrors` respectively.
+
+```js
+
+const [values, setValues] = useState({
+    username: 'Percival'
+}) 
+
+<Form
+    values={values}
+    watchValues={true}
+>
+    <View>
+        <Button onPress={() => setValues({username: 'Uther'})} title="Change Name">
+    </View>
+    <View>
+        <Form.Input name="username" />
+        <Form.Submit title="Submit">
+    </View>
+</Form>
+
 ```
 
 ## Components
@@ -175,6 +354,7 @@ const clearAll = () => form.clearErrors()
 | `name`              | String                             | Name for the input when mapped in to the form values.                                                                                     |
 | `as`                | Component _(Default: `TextInput`)_ | Component to render the input as.                                                                                                         |
 | `eventKey`          | String _(Default: `onChangeText`)_ | Event from the input to listen to for value updates.                                                                                      |
+| `valueKey` | String _(Default: `value`)_ | Prop from the input that expects the form value |
 | `parseValue`        | Function                           | Function to handle input values before updating them in the form.                                                                         |
 | `instantValidation` | Boolean _(Default: `false`)_       | Should we start validating as soon as the user starts changing the input or only re-validate if we currently have an error for the field. |
 | `required`          | Boolean _(Default: `false`)_       | Field is required to not be falsey to submit the form.                                                                                    |
