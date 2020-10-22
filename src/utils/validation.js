@@ -3,18 +3,19 @@ export const error = (type, message) => ({
   message,
 })
 
-export const errorMessage = (name, errorMessages = {}, { props, fallback }) => {
-  if (!errorMessages.hasOwnProperty(name)) {
+export const errorMessage = (name, messages = {}, { props, fallback }) => {
+
+  if (!messages.hasOwnProperty(name)) {
     return fallback
   }
 
-  return typeof errorMessages[name] === 'string'
-    ? errorMessages[name]
-    : errorMessages[name](props)
+  return typeof messages[name] === 'string'
+    ? messages[name]
+    : messages[name](props)
 }
 
 export const validate = (
-  { name, required, minLength, maxLength, validator, errorMessages = {} },
+  { name, required, minLength, maxLength, validator, messages = {} },
   value,
   values
 ) => {
@@ -23,7 +24,7 @@ export const validate = (
       name,
       error: error(
         'required',
-        errorMessage('required', errorMessages, {
+        errorMessage('required', messages, {
           props: { name, value },
           fallback: `The ${name} field is required.`,
         })
@@ -36,7 +37,7 @@ export const validate = (
       name,
       error: error(
         'minLength',
-        errorMessage('minLength', errorMessages, {
+        errorMessage('minLength', messages, {
           props: { name, value, minLength },
           fallback: `${name} must be at least ${minLength} characters long.`,
         })
@@ -49,7 +50,7 @@ export const validate = (
       name,
       error: error(
         'maxLength',
-        errorMessage('maxLength', errorMessages, {
+        errorMessage('maxLength', messages, {
           props: { name, value, maxLength },
           fallback: `${name} must be less than ${maxLength} characters long.`,
         })
@@ -62,7 +63,7 @@ export const validate = (
 
     validationError.message = errorMessage(
       validationError.type,
-      errorMessages,
+      messages,
       {
         props: { name, value },
         fallback: validationError.message || '',

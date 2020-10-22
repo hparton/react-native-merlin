@@ -16,6 +16,7 @@ const Input = ({
   minLength,
   maxLength,
   validator,
+  messages,
   instantValidation = false,
   name,
   onSubmitEditing,
@@ -43,7 +44,7 @@ const Input = ({
     }
 
     const validated = validate(
-      { name, ref, required, minLength, maxLength, validator },
+      { name, ref, required, minLength, maxLength, validator, messages },
       v,
       values
     )
@@ -60,7 +61,7 @@ const Input = ({
 
   useEffect(() => {
     if (shouldRecalculate) {
-      registerInput({ name, ref, required, minLength, maxLength, validator })
+      registerInput({ name, ref, required, minLength, maxLength, validator, messages })
     }
   }, [shouldRecalculate])
 

@@ -37,11 +37,11 @@ Merlin is still in early beta, It's in a few apps currently in development and t
 ## Installation
 
 ```sh
-# npm
-npm install react-native-merlin
-
 #yarn
 yarn add react-native-merlin
+
+# npm
+npm install react-native-merlin
 ```
 
 <br />
@@ -165,8 +165,30 @@ const confirmPassword = (value, error, values) => value !== values.password && e
 
 <Form onError={errors => console.log(errors)}>
     <Form.Input name="password" required />
-    <Form.Input name="password_confirmation" required validator={confirmPassword} />
+    <Form.Input 
+      name="password_confirmation" 
+      required 
+      validator={confirmPassword} 
+    />
     <Form.Error name="password_confirmation">
+</Form>
+```
+
+<br />
+
+### Using Custom Error Messages
+Merlin gives you some default error messages out of the box but sometimes these aren't the nicest looking if your using certain input names. Take the `password_confirmation` from above for example. By default that will return `The password_confirmation field is required.` which isn't great. You can work around this by supplying custom messages to the `<Form.Input>` to overwrite the existing ones or add support for custom error types.
+
+```js
+<Form>
+    <Form.Input 
+      name="password_confirmation" 
+      required 
+      messages={{
+        required: 'Password Confirmation is a required field.'
+        notFoo: ({name, value}) => `This can also be a function that returns a string with the ${name}`
+      }} 
+    />
 </Form>
 ```
 
@@ -345,7 +367,8 @@ const clearAll = () => form.clearErrors()
 <Form.Input
   name=""
   as={TextInput}
-  eventKey=""
+  eventKey="onChangeText"
+  valueKey="value"
   parseValue={}
   required
   maxLength={}
@@ -368,6 +391,7 @@ const clearAll = () => form.clearErrors()
 | `maxLength`         | Number                             | Field is required to be under the maxLength to submit the form.                                                                           |
 | `minLength`         | Number                             | Field is required to be over the minLength to submit the form.                                                                            |
 | `validator`         | Function                           | Custom validation function, return `true` to pass or return a custom error.                                                               |
+| `messages` | Object | An object of custom error messages where key is equal to the error type and value is the message |
 
 ##### Custom validator
 
