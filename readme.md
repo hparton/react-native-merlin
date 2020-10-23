@@ -57,7 +57,13 @@ Merlin takes care of state management for you. At it's most basic it looks like 
 </Form>
 ```
 
-This will render out a `FormProvider` to hold your form state, an input which defaults to a `TextInput` and a submit button which defaults to a `Button`. It also handles some basic validation whilst giving you a framework to build on top of.
+This will render out a `FormProvider` to hold your form state, an input which defaults to a `TextInput` and a submit button which defaults to a `Button`. It will also run validation on the `username` to check it has input and if all the validation passes then your `onSubmit` is called with the form values.
+
+```js
+{
+  username: 'Lancelot'
+}
+```
 
 <br />
 
