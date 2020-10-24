@@ -27,7 +27,7 @@
     "src/"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@react-native-community/bob": "^0.14.5",
     "react": "^16.13.1",
