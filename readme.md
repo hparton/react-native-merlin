@@ -131,7 +131,7 @@ const handleSubmit = async (values) => {
     try {
         await wait(2000); // this is where you would do your post instead.
     } catch (e) {
-        testRef.current.addErrors(error => ({
+        formRef.current.addErrors(error => ({
             username: error('externalError', 'Error from the api!'),
         }));
     }
