@@ -6,7 +6,7 @@ import { validate } from '../utils/validation'
 import { useForm } from './Form'
 
 const Input = ({
-  as = TextInput,
+  as: Tag = TextInput,
   children,
   eventKey = 'onChangeText',
   valueKey = 'value',
@@ -23,17 +23,9 @@ const Input = ({
   ...passThrough
 }) => {
   const ref = useRef(null)
-  const {
-    values,
-    setValues,
-    setErrors,
-    errors,
-    inputs,
-    shouldRecalculate,
-    addInput,
-    registerInput,
-  } = useForm('Form.Input')
-  const Tag = as
+  const { values, setValues, setErrors, errors, inputs, shouldRecalculate, addInput, registerInput } = useForm(
+    'Form.Input'
+  )
 
   const onEvent = v => {
     let value = parseValue ? parseValue(v) : v
@@ -43,11 +35,7 @@ const Input = ({
       return
     }
 
-    const validated = validate(
-      { name, ref, required, minLength, maxLength, validator, messages },
-      v,
-      values
-    )
+    const validated = validate({ name, ref, required, minLength, maxLength, validator, messages }, v, values)
 
     if (validated === true && errors?.[name]) {
       setErrors(current => omit(current, [name]))

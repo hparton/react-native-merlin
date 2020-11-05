@@ -52,8 +52,8 @@ Merlin takes care of state management for you. At it's most basic it looks like 
 
 ```js
 <Form onSubmit={values => console.log(values)}>
-    <Form.Input name="username" required />
-    <Form.Submit title="Submit" />
+  <Form.Input name="username" required />
+  <Form.Submit title="Submit" />
 </Form>
 ```
 
@@ -72,13 +72,10 @@ This will render out a `FormProvider` to hold your form state, an input which de
 It's not much use to have a form that just console logs out some values if it's valid and does nothing if there is an error, so we need to add some logic around that. First up is showing any relevant errors to the user using `<Form.Error>`.
 
 ```js
-<Form 
-    onSubmit={values => console.log(values)}
-    onError={errors => console.log(errors)}
->
-    <Form.Input name="username" required />
-    <Form.Error name="username" />
-    <Form.Submit title="Submit" />
+<Form onSubmit={values => console.log(values)} onError={errors => console.log(errors)}>
+  <Form.Input name="username" required />
+  <Form.Error name="username" />
+  <Form.Submit title="Submit" />
 </Form>
 ```
 
@@ -97,22 +94,18 @@ Your form submission is most likely going to post off to a backend and take a se
 To get access to the current form state you can use `<Form.State>` and a render function.
 
 ```js
-const wait = duration => new Promise(success => setTimeout(success, duration));
-const handleSubmit = async (values) => {
-    await wait(2000); // this is where you would do your post instead.
-    console.log('Submitted! ', values);
+const wait = duration => new Promise(success => setTimeout(success, duration))
+const handleSubmit = async values => {
+  await wait(2000) // this is where you would do your post instead.
+  console.log('Submitted! ', values)
 }
 
-<Form 
-    onSubmit={handleSubmit}
->
-    <Form.Input name="username" required />
-    <Form.Error name="username" />
-    <Form.State>
-        {({submitting}) => (
-            <Form.Submit disabled={submitting} title={submitting ? 'Submitting...' : 'Submit'} />
-        )}
-    </Form.State>
+;<Form onSubmit={handleSubmit}>
+  <Form.Input name="username" required />
+  <Form.Error name="username" />
+  <Form.State>
+    {({ submitting }) => <Form.Submit disabled={submitting} title={submitting ? 'Submitting...' : 'Submit'} />}
+  </Form.State>
 </Form>
 ```
 
@@ -126,26 +119,22 @@ Then we can use the `addErrors` helper to add our external errors.
 
 ```js
 const formRef = useRef(null)
-const wait = duration => new Promise((success, fail) => setTimeout(fail, duration));
-const handleSubmit = async (values) => {
-    try {
-        await wait(2000); // this is where you would do your post instead.
-    } catch (e) {
-        formRef.current.addErrors(error => ({
-            username: error('externalError', 'Error from the api!'),
-        }));
-    }
+const wait = duration => new Promise((success, fail) => setTimeout(fail, duration))
+const handleSubmit = async values => {
+  try {
+    await wait(2000) // this is where you would do your post instead.
+  } catch (e) {
+    formRef.current.addErrors(error => ({
+      username: error('externalError', 'Error from the api!'),
+    }))
+  }
 }
 
-<Form
-    ref={formRef}
-    onSubmit={handleSubmit}
->
-    <Form.Input name="username" required />
-    <Form.Submit title="Submit" />
+;<Form ref={formRef} onSubmit={handleSubmit}>
+  <Form.Input name="username" required />
+  <Form.Submit title="Submit" />
 </Form>
 ```
-
 
 <br />
 
@@ -154,11 +143,11 @@ const handleSubmit = async (values) => {
 Merlin ships with some basic validators loosely based on the built-in HTML5 form validation. Currently just `required`, `minLength` and `maxLength` but these will be expanded on in the future if needed to cover more common use cases. If you need to expand beyond this and want to integrate your own validators, it's very simple. Just add a `validator` prop to the `<Form.Input>`.
 
 ```js
-const isNotFoo = (value, error) => value !== 'Foo' && error('notFoo', `Value should not be Foo.`);
+const isNotFoo = (value, error) => value !== 'Foo' && error('notFoo', `Value should not be Foo.`)
 
-<Form onError={errors => console.log(errors)}>
-    <Form.Input name="username" required validator={isNotFoo} />
-    <Form.Submit title="Submit" />
+;<Form onError={errors => console.log(errors)}>
+  <Form.Input name="username" required validator={isNotFoo} />
+  <Form.Submit title="Submit" />
 </Form>
 ```
 
@@ -171,10 +160,10 @@ const confirmPassword = (value, error, values) => value !== values.password && e
 
 <Form onError={errors => console.log(errors)}>
     <Form.Input name="password" required />
-    <Form.Input 
-      name="password_confirmation" 
-      required 
-      validator={confirmPassword} 
+    <Form.Input
+      name="password_confirmation"
+      required
+      validator={confirmPassword}
     />
     <Form.Error name="password_confirmation">
 </Form>
@@ -183,57 +172,59 @@ const confirmPassword = (value, error, values) => value !== values.password && e
 <br />
 
 ### Using Custom Error Messages
+
 Merlin gives you some default error messages out of the box, but sometimes these aren't the nicest looking if your using certain input names. Take the `password_confirmation` from above for example. By default that will return `The password_confirmation field is required.` which isn't great. You can work around this by supplying custom messages to the `<Form.Input>` to overwrite the existing ones or add support for custom error types.
 
 ```js
 <Form>
-    <Form.Input 
-      name="password_confirmation" 
-      required 
-      messages={{
-        required: 'Password Confirmation is a required field.',
-        notFoo: ({name, value}) => `This can also be a function that returns a string with the ${name}`
-      }} 
-    />
+  <Form.Input
+    name="password_confirmation"
+    required
+    messages={{
+      required: 'Password Confirmation is a required field.',
+      notFoo: ({ name, value }) => `This can also be a function that returns a string with the ${name}`,
+    }}
+  />
 </Form>
 ```
 
 <br />
 
 ### Using Custom Inputs
+
 Just using the built-in inputs provided by `react-native` won't get you very far when it comes to styling up you form, adding custom functionality or integrating 3rd party inputs.
 
 You can specify what the `<Form.Input>` should render as by providing the `as` prop. Merlin will then render the input using that component instead and pass along all the props you defined as well as any props managed by Merlin (such as the `value` or `error` for the field).
 
 ```js
 <Form onSubmit={values => console.log(values)}>
-    <Form.Input as={StyledTextInput} name="username" label="User" required />
-    <Form.Submit as={Button} title="Submit" />
+  <Form.Input as={StyledTextInput} name="username" label="User" required />
+  <Form.Submit as={Button} title="Submit" />
 </Form>
 ```
 
 And this is what the `StyledTextInput` would look like. You need to make sure to use `forwardRef` to pass along the ref handled by Merlin onto the actual input you want to use.
 
 ```js
-const StyledTextInput = React.forwardRef(({error, label, ...props}, ref) => (
+const StyledTextInput = React.forwardRef(({ error, label, ...props }, ref) => (
   <View>
     {label && <Text style={styles.label}>{label}</Text>}
     <TextInput {...props} ref={ref} />
     {error && <Text>{error.message}</Text>}
   </View>
-));
+))
 ```
 
 If you're using a third-party component or integrating an existing component, you may need to tell Merlin how to integrate with your input properly. There are a few ways that you can do this. This example uses a `Switch` component from `react-native`.
 
 ```js
 <Form.Input
-    as={Switch}
-    name="example"
-    required
-    valueKey="value"
-    eventKey="onValueChange"
-    parseValue={value => value ? 1 : 0}
+  as={Switch}
+  name="example"
+  required
+  valueKey="value"
+  eventKey="onValueChange"
+  parseValue={value => (value ? 1 : 0)}
 />
 ```
 
@@ -266,7 +257,7 @@ By default, this will just set the initial state of the form on the first render
 
 const [values, setValues] = useState({
     username: 'Percival'
-}) 
+})
 
 <Form
     values={values}
@@ -298,15 +289,7 @@ const [values, setValues] = useState({
 #### Form
 
 ```jsx
-<Form
-  onSubmit={}
-  onError={}
-  values={{}}
-  errors={{}}
-  watch={false}
-  watchValues={false}
-  watchErrors={false}
->
+<Form onSubmit={} onError={} values={{}} errors={{}} watch={false} watchValues={false} watchErrors={false}>
   {/* Your content goes here*/}
 </Form>
 ```
@@ -390,14 +373,14 @@ const clearAll = () => form.clearErrors()
 | `name`              | String                             | Name for the input when mapped in to the form values.                                                                                     |
 | `as`                | Component _(Default: `TextInput`)_ | Component to render the input as.                                                                                                         |
 | `eventKey`          | String _(Default: `onChangeText`)_ | Event from the input to listen to for value updates.                                                                                      |
-| `valueKey` | String _(Default: `value`)_ | Prop from the input that expects the form value |
+| `valueKey`          | String _(Default: `value`)_        | Prop from the input that expects the form value                                                                                           |
 | `parseValue`        | Function                           | Function to handle input values before updating them in the form.                                                                         |
 | `instantValidation` | Boolean _(Default: `false`)_       | Should we start validating as soon as the user starts changing the input or only re-validate if we currently have an error for the field. |
 | `required`          | Boolean _(Default: `false`)_       | Field is required to not be falsey to submit the form.                                                                                    |
 | `maxLength`         | Number                             | Field is required to be under the maxLength to submit the form.                                                                           |
 | `minLength`         | Number                             | Field is required to be over the minLength to submit the form.                                                                            |
 | `validator`         | Function                           | Custom validation function, return `true` to pass or return a custom error.                                                               |
-| `messages` | Object | An object of custom error messages where key is equal to the error type and value is the message |
+| `messages`          | Object                             | An object of custom error messages where key is equal to the error type and value is the message                                          |
 
 ##### Custom validator
 
@@ -465,11 +448,12 @@ const validator = (v, error, values) => {
 
 ##### Render prop arguments
 
-| Prop         | Type    | Description                                        |
-| ------------ | ------- | -------------------------------------------------- |
-| `values`     | Object  | Access to the internal values state from the form. |
-| `errors`     | Array   | Access to the internal errors state from the form. |
-| `submitting` | Boolean | Is the form currently submitting.                  |
+| Prop         | Type    | Description                                           |
+| ------------ | ------- | ----------------------------------------------------- |
+| `values`     | Object  | Access to the internal values state from the form.    |
+| `errors`     | Array   | Access to the internal errors state from the form.    |
+| `inputs`     | Array   | Access to the internal inputs tracking from the form. |
+| `submitting` | Boolean | Is the form currently submitting.                     |
 
 <br />
 
