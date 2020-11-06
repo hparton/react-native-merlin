@@ -1,5 +1,6 @@
-export const getInputPosition = (inputs, name) =>
-  inputs.findIndex(input => input.name === name)
+import { deepKeys, get, set } from './object'
+
+export const getInputPosition = (inputs, name) => inputs.findIndex(input => input.name === name)
 
 export const getReturnKeyType = (inputs, name, multiline = false) => {
   const nextInput = getNextFocusableInput(inputs, name)
@@ -27,10 +28,7 @@ export const getNextFocusableInput = (inputs, name) => {
 }
 
 export const filterRelevant = (state, inputs) => {
-  return Object.keys(state)
+  return deepKeys(state)
     .filter(key => inputs.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = state[key]
-      return obj
-    }, {})
+    .reduce((obj, key) => set(obj, key, get(state, key)), {})
 }

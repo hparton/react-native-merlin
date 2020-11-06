@@ -15,6 +15,13 @@ export const get = (obj, keys) => {
   else return get(obj[keys[0]], keys.slice(1))
 }
 
+export const deepKeys = obj => {
+  return Object.keys(obj)
+    .filter(key => obj[key] instanceof Object)
+    .map(key => deepKeys(obj[key]).map(k => `${key}.${k}`))
+    .reduce((x, y) => x.concat(y), Object.keys(obj))
+}
+
 // Set is currently from https://github.com/fwilkerson/clean-set
 // Slightly refactored since we don't need to be able to pass update functions
 export const set = (obj, keys, value) => {

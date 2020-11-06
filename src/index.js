@@ -12,3 +12,4 @@ Form.State = _State
 Form.Submit = _Submit
 
 export default Form
+export { deepKeys, get } from './utils/object'
