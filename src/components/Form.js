@@ -1,15 +1,10 @@
-import React, {
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-} from 'react'
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
 
 import useInputRefs from '../hooks/useInputRefs'
 
 import { validate, error } from '../utils/validation'
 import { filterRelevant } from '../utils/inputs'
-import { omit } from '../utils/object'
+import { get, omit } from '../utils/object'
 
 const FormContext = React.createContext()
 
@@ -39,12 +34,7 @@ const Form = forwardRef(
     const [submitting, setSubmitting] = useState(false)
     const [values, setValues] = useState(_values)
     const [errors, setErrors] = useState(_errors)
-    const {
-      registerInput,
-      addInput,
-      inputs,
-      shouldRecalculate,
-    } = useInputRefs()
+    const { registerInput, addInput, inputs, shouldRecalculate } = useInputRefs()
 
     useEffect(() => {
       if (watch || watchValues) {
@@ -59,9 +49,7 @@ const Form = forwardRef(
     }, [_errors])
 
     const validateAllFields = values => {
-      const errors = inputs
-        .map(input => validate(input, values[input.name], values))
-        .filter(v => v !== true)
+      const errors = inputs.map(input => validate(input, get(values, input.name), values)).filter(v => v !== true)
 
       const errorsMappedToNames = errors.reduce((errors, item) => {
         errors[item.name] = item.error
