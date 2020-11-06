@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react'
 import { TextInput } from 'react-native'
 import { getReturnKeyType, getNextFocusableInput } from '../utils/inputs'
-import { omit } from '../utils/object'
+import { omit, set, get } from '../utils/object'
 import { validate } from '../utils/validation'
 import { useForm } from './Form'
 
@@ -29,7 +29,7 @@ const Input = ({
 
   const onEvent = v => {
     let value = parseValue ? parseValue(v) : v
-    setValues(current => ({ ...current, [name]: value }))
+    setValues(current => set(current, name, value))
 
     if (!errors?.[name] && !instantValidation) {
       return
@@ -72,7 +72,7 @@ const Input = ({
   const merlinProps = {
     ref,
     [eventKey]: onEvent,
-    [valueKey]: values?.[name] || undefined,
+    [valueKey]: get(values, name) || undefined,
     error: errors?.[name] || undefined,
     ...(multiline && { multiline }),
     returnKeyType,
