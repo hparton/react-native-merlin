@@ -20,12 +20,18 @@ const Input = ({
   instantValidation = false,
   name,
   onSubmitEditing,
+  returnKeyType,
+  suppressReturnKeyTypeWarning = false,
   ...passThrough
 }) => {
   const ref = useRef(null)
   const { values, setValues, setErrors, errors, inputs, shouldRecalculate, addInput, registerInput } = useForm(
     'Form.Input'
   )
+
+  if (returnKeyType && !suppressReturnKeyTypeWarning) {
+    console.warn("A form input has been supplied a returnKeyType, but react-native-merlin handles these automatically. You can suppress this warning by passing suppressReturnKeyTypeWarning to the input component.")
+  }
 
   const onEvent = v => {
     let value = parseValue ? parseValue(v) : v
@@ -55,7 +61,7 @@ const Input = ({
 
   useEffect(addInput, [])
 
-  const returnKeyType = useMemo(() => {
+  const autoReturnKeyType = useMemo(() => {
     return getReturnKeyType(inputs, name, multiline)
   }, [inputs, name, multiline])
 
@@ -75,8 +81,8 @@ const Input = ({
     [valueKey]: get(values, name) || undefined,
     error: errors?.[name] || undefined,
     ...(multiline && { multiline }),
-    returnKeyType,
-    onSubmitEditing: e => {
+    returnKeyType: returnKeyType || autoReturnKeyType,
+    onSubmitEditing: (e) => {
       tryFocusNextInput(e)
       onSubmitEditing && onSubmitEditing(e)
     },
