@@ -49,7 +49,9 @@ const Form = forwardRef(
     }, [_errors])
 
     const validateAllFields = values => {
-      const errors = inputs.map(input => validate(input, get(values, input.name), values)).filter(v => v !== true)
+      const errors = inputs
+        .map((input) => validate(input, get(values, input.name), values))
+        .filter((v) => (v?.error ? v.error !== true : v !== true))
 
       const errorsMappedToNames = errors.reduce((errors, item) => {
         errors[item.name] = item.error
